@@ -5,11 +5,13 @@ import { categories, products } from "@/data/mockData";
 import ProductCard from "@/components/ProductCard";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
+import hero3 from "@/assets/hero-3.png";
 import { useState, useEffect } from "react";
 
 const heroSlides = [
   { image: hero1, title: "Timeless Rose Gold Jewellery", subtitle: "Designed for elegance, crafted for everyday beauty" },
   { image: hero2, title: "Bridal Collection 2026", subtitle: "Make your special day even more memorable" },
+  { image: hero3, title: "Diamond Elegance", subtitle: "Exquisite diamond pieces that captivate and shine" },
 ];
 
 const features = [
