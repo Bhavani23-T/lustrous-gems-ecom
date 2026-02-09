@@ -2,13 +2,24 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Heart, ShoppingBag, User, Menu, X, ChevronDown } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
-import { metalTypes } from "@/data/mockData";
+import { collectionSubcategories } from "@/data/mockData";
+
+const metalSlugs: Record<string, string> = {
+  Gold: "gold",
+  Diamond: "diamond",
+  Silver: "silver",
+  Platinum: "platinum",
+  "One Gram Gold": "one-gram-gold",
+};
+
+const collections = Object.keys(collectionSubcategories);
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [catOpen, setCatOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [openCollection, setOpenCollection] = useState<string | null>(null);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const { cartCount } = useStore();
   const navigate = useNavigate();
@@ -22,10 +33,7 @@ const Navbar = () => {
     }
   };
 
-  const navCategories = [
-    { name: "All Jewellery", slug: "" },
-    ...metalTypes.map((m) => ({ name: m, slug: m.toLowerCase().replace(/ /g, "-") })),
-  ];
+  const subcatSlug = (sub: string) => sub.toLowerCase().replace(/ /g, "-");
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
@@ -42,28 +50,45 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-6">
-            <Link to="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">Home</Link>
-            <div className="relative" onMouseEnter={() => setCatOpen(true)} onMouseLeave={() => setCatOpen(false)}>
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
-                Categories <ChevronDown size={14} />
-              </button>
-              {catOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-popover border border-border rounded-lg shadow-lg py-2 w-48 z-50">
-                  {navCategories.map((cat) => (
+          <nav className="hidden lg:flex items-center gap-1">
+            <Link to="/" className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">Home</Link>
+
+            {collections.map((col) => (
+              <div
+                key={col}
+                className="relative"
+                onMouseEnter={() => setOpenCollection(col)}
+                onMouseLeave={() => setOpenCollection(null)}
+              >
+                <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">
+                  {col} <ChevronDown size={14} className={`transition-transform ${openCollection === col ? "rotate-180" : ""}`} />
+                </button>
+                {openCollection === col && (
+                  <div className="absolute top-full left-0 mt-0 bg-popover border border-border rounded-lg shadow-lg py-2 w-48 z-50">
                     <Link
-                      key={cat.name}
-                      to={cat.slug ? `/products?metal=${cat.slug}` : "/products"}
-                      className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent transition-colors"
-                      onClick={() => setCatOpen(false)}
+                      to={`/products?metal=${metalSlugs[col]}`}
+                      className="block px-4 py-2 text-sm font-medium text-popover-foreground hover:bg-accent transition-colors"
+                      onClick={() => setOpenCollection(null)}
                     >
-                      {cat.name}
+                      All {col}
                     </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-            <Link to="/products" className="text-sm font-medium text-foreground hover:text-primary transition-colors">Shop</Link>
+                    <div className="border-t border-border my-1" />
+                    {collectionSubcategories[col].map((sub) => (
+                      <Link
+                        key={sub}
+                        to={`/products?metal=${metalSlugs[col]}&category=${subcatSlug(sub)}`}
+                        className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent transition-colors"
+                        onClick={() => setOpenCollection(null)}
+                      >
+                        {sub}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            <Link to="/products" className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">Shop All</Link>
           </nav>
 
           {/* Actions */}
@@ -119,15 +144,45 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden bg-background border-t border-border">
-          <nav className="container mx-auto px-4 py-4 flex flex-col gap-3">
+        <div className="lg:hidden bg-background border-t border-border max-h-[70vh] overflow-y-auto">
+          <nav className="container mx-auto px-4 py-4 flex flex-col gap-1">
             <Link to="/" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Home</Link>
-            <Link to="/products" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>All Jewellery</Link>
-            {metalTypes.map((m) => (
-              <Link key={m} to={`/products?metal=${m.toLowerCase().replace(/ /g, "-")}`} className="text-sm py-2 text-muted-foreground" onClick={() => setMobileOpen(false)}>
-                {m}
-              </Link>
+
+            {collections.map((col) => (
+              <div key={col}>
+                <button
+                  className="flex items-center justify-between w-full text-sm font-medium py-2"
+                  onClick={() => setMobileExpanded(mobileExpanded === col ? null : col)}
+                >
+                  {col}
+                  <ChevronDown size={14} className={`transition-transform ${mobileExpanded === col ? "rotate-180" : ""}`} />
+                </button>
+                {mobileExpanded === col && (
+                  <div className="pl-4 flex flex-col gap-1 pb-2">
+                    <Link
+                      to={`/products?metal=${metalSlugs[col]}`}
+                      className="text-sm py-1.5 text-primary font-medium"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      All {col}
+                    </Link>
+                    {collectionSubcategories[col].map((sub) => (
+                      <Link
+                        key={sub}
+                        to={`/products?metal=${metalSlugs[col]}&category=${subcatSlug(sub)}`}
+                        className="text-sm py-1.5 text-muted-foreground"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {sub}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
+
+            <Link to="/products" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Shop All</Link>
+            <div className="border-t border-border my-2" />
             <Link to="/profile" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Profile</Link>
             <Link to="/orders" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>My Orders</Link>
             <Link to="/admin" className="text-sm font-medium py-2 text-primary" onClick={() => setMobileOpen(false)}>Admin Panel</Link>
