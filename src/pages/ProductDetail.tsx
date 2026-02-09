@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
-import { Heart, ShoppingBag, Star, Minus, Plus, ChevronLeft } from "lucide-react";
+import { useState, useRef } from "react";
+import { Heart, ShoppingBag, Star, Minus, Plus, ChevronLeft, RotateCw } from "lucide-react";
 import { products, mockReviews } from "@/data/mockData";
 import { useStore } from "@/context/StoreContext";
 import ProductCard from "@/components/ProductCard";
@@ -11,6 +11,9 @@ const ProductDetail = () => {
   const { addToCart, toggleWishlist, isInWishlist } = useStore();
   const [selectedImage, setSelectedImage] = useState(0);
   const [qty, setQty] = useState(1);
+  const [showZoom, setShowZoom] = useState(false);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+  const imgRef = useRef<HTMLDivElement>(null);
 
   if (!product) {
     return (
@@ -24,6 +27,14 @@ const ProductDetail = () => {
   const related = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
   const wishlisted = isInWishlist(product.id);
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!imgRef.current) return;
+    const rect = imgRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomPos({ x, y });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Link to="/products" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-6">
@@ -31,10 +42,31 @@ const ProductDetail = () => {
       </Link>
 
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        {/* Images */}
+        {/* Images with zoom */}
         <div>
-          <div className="aspect-square rounded-xl overflow-hidden bg-muted mb-3">
-            <img src={product.images[selectedImage]} alt={product.name} className="w-full h-full object-cover" />
+          <div
+            ref={imgRef}
+            className="aspect-square rounded-xl overflow-hidden bg-muted mb-3 relative cursor-crosshair"
+            onMouseEnter={() => setShowZoom(true)}
+            onMouseLeave={() => setShowZoom(false)}
+            onMouseMove={handleMouseMove}
+          >
+            <img
+              src={product.images[selectedImage]}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+            {showZoom && (
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage: `url(${product.images[selectedImage]})`,
+                  backgroundSize: "250%",
+                  backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            )}
           </div>
           <div className="flex gap-2">
             {product.images.map((img, i) => (
@@ -46,6 +78,32 @@ const ProductDetail = () => {
                 <img src={img} alt="" className="w-full h-full object-cover" />
               </button>
             ))}
+          </div>
+
+          {/* 360° Video Section */}
+          <div className="mt-6 rounded-xl overflow-hidden bg-muted border border-border">
+            <div className="flex items-center gap-2 px-4 py-3 bg-secondary">
+              <RotateCw size={16} className="text-primary" />
+              <span className="text-sm font-semibold">360° Product View</span>
+            </div>
+            <div className="aspect-video relative bg-foreground/5 flex items-center justify-center">
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                poster={product.images[0]}
+              >
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="bg-background/80 backdrop-blur rounded-lg px-4 py-2 flex items-center gap-2">
+                  <RotateCw size={14} className="text-primary animate-spin" style={{ animationDuration: "3s" }} />
+                  <span className="text-xs font-medium text-muted-foreground">360° View</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

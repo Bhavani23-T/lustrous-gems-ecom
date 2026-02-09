@@ -3,16 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Truck, ShieldCheck, RotateCcw } from "lucide-react";
 import { categories, products } from "@/data/mockData";
 import ProductCard from "@/components/ProductCard";
-import hero1 from "@/assets/hero-1.jpg";
-import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.png";
-import { useState, useEffect } from "react";
-
-const heroSlides = [
-  { image: hero1, title: "Timeless Rose Gold Jewellery", subtitle: "Designed for elegance, crafted for everyday beauty" },
-  { image: hero2, title: "Bridal Collection 2026", subtitle: "Make your special day even more memorable" },
-  { image: hero3, title: "Diamond Elegance", subtitle: "Exquisite diamond pieces that captivate and shine" },
-];
 
 const features = [
   { icon: Sparkles, title: "Certified Purity", desc: "BIS Hallmarked" },
@@ -22,40 +13,26 @@ const features = [
 ];
 
 const Index = () => {
-  const [slide, setSlide] = useState(0);
   const newArrivals = products.filter((p) => p.isNew || p.isBestseller).slice(0, 4);
   const featured = products.slice(0, 8);
 
-  useEffect(() => {
-    const timer = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 5000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <>
-      {/* Hero */}
+      {/* Hero - single image */}
       <section className="relative h-[60vh] md:h-[80vh] overflow-hidden">
-        {heroSlides.map((s, i) => (
-          <div
-            key={i}
-            className={`absolute inset-0 transition-opacity duration-1000 ${i === slide ? "opacity-100" : "opacity-0"}`}
-          >
-            <img src={s.image} alt={s.title} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
-          </div>
-        ))}
-        <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
+        <img src={hero3} alt="Diamond Elegance" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
+        <div className="relative z-10 container mx-auto px-4 h-full flex items-center absolute inset-0">
           <motion.div
-            key={slide}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-lg"
           >
             <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-4">
-              {heroSlides[slide].title}
+              Diamond Elegance
             </h1>
-            <p className="text-muted-foreground text-base md:text-lg mb-6">{heroSlides[slide].subtitle}</p>
+            <p className="text-muted-foreground text-base md:text-lg mb-6">Exquisite diamond pieces that captivate and shine</p>
             <div className="flex gap-3">
               <Link
                 to="/products"
@@ -71,16 +48,6 @@ const Index = () => {
               </Link>
             </div>
           </motion.div>
-        </div>
-        {/* Dots */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-          {heroSlides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setSlide(i)}
-              className={`w-2.5 h-2.5 rounded-full transition-colors ${i === slide ? "bg-primary" : "bg-foreground/30"}`}
-            />
-          ))}
         </div>
       </section>
 

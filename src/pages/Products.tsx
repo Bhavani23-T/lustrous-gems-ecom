@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SlidersHorizontal, X } from "lucide-react";
-import { products, metalTypes, purityOptions, categories } from "@/data/mockData";
+import { products, metalTypes, purityOptions, categories, collectionSubcategories } from "@/data/mockData";
 import ProductCard from "@/components/ProductCard";
 
 const sortOptions = [
@@ -12,15 +12,26 @@ const sortOptions = [
   { label: "Newest", value: "newest" },
 ];
 
+// Gather all unique subcategories
+const allSubcategories = [...new Set(Object.values(collectionSubcategories).flat())].sort();
+
 const Products = () => {
   const [params] = useSearchParams();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedMetal, setSelectedMetal] = useState(params.get("metal") || "");
   const [selectedCategory, setSelectedCategory] = useState(params.get("category") || "");
   const [selectedPurity, setSelectedPurity] = useState("");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 400000]);
   const [sortBy, setSortBy] = useState("relevance");
   const searchQuery = params.get("search") || "";
+
+  // Re-sync from URL params on navigation
+  useMemo(() => {
+    const m = params.get("metal") || "";
+    const c = params.get("category") || "";
+    if (m !== selectedMetal) setSelectedMetal(m);
+    if (c !== selectedCategory) setSelectedCategory(c);
+  }, [params.get("metal"), params.get("category")]);
 
   const filtered = useMemo(() => {
     let result = [...products];
@@ -39,17 +50,28 @@ const Products = () => {
     return result;
   }, [selectedMetal, selectedCategory, selectedPurity, priceRange, sortBy, searchQuery]);
 
-  const clearFilters = () => { setSelectedMetal(""); setSelectedCategory(""); setSelectedPurity(""); setPriceRange([0, 200000]); };
+  const clearFilters = () => { setSelectedMetal(""); setSelectedCategory(""); setSelectedPurity(""); setPriceRange([0, 400000]); };
+
+  // Build a friendly title
+  const getTitle = () => {
+    if (searchQuery) return `Results for "${searchQuery}"`;
+    const metalName = metalTypes.find(m => m.toLowerCase().replace(/ /g, "-") === selectedMetal);
+    const catName = selectedCategory ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1) : "";
+    if (metalName && catName) return `${metalName} ${catName}`;
+    if (metalName) return `${metalName} Jewellery`;
+    if (catName) return catName;
+    return "All Jewellery";
+  };
 
   const FilterPanel = () => (
     <div className="space-y-6">
       <div>
-        <h4 className="font-semibold text-sm mb-3">Category</h4>
+        <h4 className="font-semibold text-sm mb-3">Sub-Category</h4>
         <div className="space-y-2">
-          {categories.map((c) => (
-            <label key={c.slug} className="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="radio" name="category" checked={selectedCategory === c.slug} onChange={() => setSelectedCategory(c.slug)} className="accent-primary" />
-              {c.name}
+          {allSubcategories.map((c) => (
+            <label key={c} className="flex items-center gap-2 text-sm cursor-pointer">
+              <input type="radio" name="category" checked={selectedCategory === c.toLowerCase().replace(/ /g, "-")} onChange={() => setSelectedCategory(c.toLowerCase().replace(/ /g, "-"))} className="accent-primary" />
+              {c}
             </label>
           ))}
         </div>
@@ -78,7 +100,7 @@ const Products = () => {
       </div>
       <div>
         <h4 className="font-semibold text-sm mb-3">Price Range</h4>
-        <input type="range" min={0} max={200000} step={5000} value={priceRange[1]} onChange={(e) => setPriceRange([0, Number(e.target.value)])} className="w-full accent-primary" />
+        <input type="range" min={0} max={400000} step={5000} value={priceRange[1]} onChange={(e) => setPriceRange([0, Number(e.target.value)])} className="w-full accent-primary" />
         <p className="text-xs text-muted-foreground mt-1">Up to ₹{priceRange[1].toLocaleString()}</p>
       </div>
       <button onClick={clearFilters} className="text-sm text-primary hover:underline">Clear all filters</button>
@@ -88,9 +110,7 @@ const Products = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="font-display text-2xl md:text-3xl font-bold">
-          {searchQuery ? `Results for "${searchQuery}"` : selectedCategory ? categories.find(c => c.slug === selectedCategory)?.name || "Jewellery" : "All Jewellery"}
-        </h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold">{getTitle()}</h1>
         <p className="text-muted-foreground text-sm mt-1">{filtered.length} products</p>
       </div>
 
