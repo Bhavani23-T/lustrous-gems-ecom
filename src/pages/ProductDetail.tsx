@@ -77,14 +77,13 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* 360° Product Viewer */}
-        <div className="flex flex-col">
+        {/* 360° Product Viewer — keyed to product for full unmount/remount */}
+        <div className="flex flex-col" key={`viewer-${id}`}>
           <div className="aspect-square rounded-xl overflow-hidden bg-muted border border-border relative">
             <img
               src={product.images[rotationImageIndex]}
               alt={`${product.name} 360° view`}
-              className="w-full h-full object-cover transition-opacity duration-150"
-              style={{ transform: `perspective(800px) rotateY(${rotationAngle}deg)` }}
+              className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent pointer-events-none" />
             <div className="absolute top-3 left-3 bg-background/80 backdrop-blur rounded-lg px-3 py-1.5 flex items-center gap-2">
