@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Heart, ShoppingBag, Star, Minus, Plus, ChevronLeft, RotateCw } from "lucide-react";
 import { products, mockReviews } from "@/data/mockData";
 import { useStore } from "@/context/StoreContext";
@@ -11,9 +11,17 @@ const ProductDetail = () => {
   const { addToCart, toggleWishlist, isInWishlist } = useStore();
   const [selectedImage, setSelectedImage] = useState(0);
   const [qty, setQty] = useState(1);
-  const [showZoom, setShowZoom] = useState(false);
-  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
-  const imgRef = useRef<HTMLDivElement>(null);
+  const [rotationAngle, setRotationAngle] = useState(0);
+  const [isRotating, setIsRotating] = useState(true);
+
+  // Simulated 360° rotation by cycling images
+  useEffect(() => {
+    if (!product || !isRotating) return;
+    const interval = setInterval(() => {
+      setRotationAngle((prev) => (prev + 1) % 360);
+    }, 30);
+    return () => clearInterval(interval);
+  }, [product, isRotating]);
 
   if (!product) {
     return (
@@ -27,13 +35,8 @@ const ProductDetail = () => {
   const related = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
   const wishlisted = isInWishlist(product.id);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!imgRef.current) return;
-    const rect = imgRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setZoomPos({ x, y });
-  };
+  // Pick image based on rotation angle for 360 effect
+  const rotationImageIndex = Math.floor((rotationAngle / 360) * product.images.length) % product.images.length;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -41,32 +44,16 @@ const ProductDetail = () => {
         <ChevronLeft size={16} /> Back to shop
       </Link>
 
-      <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        {/* Images with zoom */}
+      {/* Media Section - Images + 360° viewer side by side */}
+      <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-8">
+        {/* Product Images (no zoom) */}
         <div>
-          <div
-            ref={imgRef}
-            className="aspect-square rounded-xl overflow-hidden bg-muted mb-3 relative cursor-crosshair"
-            onMouseEnter={() => setShowZoom(true)}
-            onMouseLeave={() => setShowZoom(false)}
-            onMouseMove={handleMouseMove}
-          >
+          <div className="aspect-square rounded-xl overflow-hidden bg-muted mb-3">
             <img
               src={product.images[selectedImage]}
               alt={product.name}
               className="w-full h-full object-cover"
             />
-            {showZoom && (
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: `url(${product.images[selectedImage]})`,
-                  backgroundSize: "250%",
-                  backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-                  backgroundRepeat: "no-repeat",
-                }}
-              />
-            )}
           </div>
           <div className="flex gap-2">
             {product.images.map((img, i) => (
@@ -79,107 +66,105 @@ const ProductDetail = () => {
               </button>
             ))}
           </div>
+        </div>
 
-          {/* 360° Video Section */}
-          <div className="mt-6 rounded-xl overflow-hidden bg-muted border border-border">
-            <div className="flex items-center gap-2 px-4 py-3 bg-secondary">
-              <RotateCw size={16} className="text-primary" />
-              <span className="text-sm font-semibold">360° Product View</span>
+        {/* 360° Product Viewer */}
+        <div className="flex flex-col">
+          <div className="aspect-square rounded-xl overflow-hidden bg-muted border border-border relative">
+            <img
+              src={product.images[rotationImageIndex]}
+              alt={`${product.name} 360° view`}
+              className="w-full h-full object-cover transition-opacity duration-150"
+              style={{ transform: `perspective(800px) rotateY(${rotationAngle}deg)` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent pointer-events-none" />
+            <div className="absolute top-3 left-3 bg-background/80 backdrop-blur rounded-lg px-3 py-1.5 flex items-center gap-2">
+              <RotateCw size={14} className={`text-primary ${isRotating ? "animate-spin" : ""}`} style={{ animationDuration: "3s" }} />
+              <span className="text-xs font-semibold">360° View</span>
             </div>
-            <div className="aspect-video relative bg-foreground/5 flex items-center justify-center">
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                poster={product.images[0]}
-              >
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="bg-background/80 backdrop-blur rounded-lg px-4 py-2 flex items-center gap-2">
-                  <RotateCw size={14} className="text-primary animate-spin" style={{ animationDuration: "3s" }} />
-                  <span className="text-xs font-medium text-muted-foreground">360° View</span>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={() => setIsRotating(!isRotating)}
+              className="absolute bottom-3 right-3 bg-background/80 backdrop-blur rounded-lg px-3 py-1.5 text-xs font-medium hover:bg-background transition-colors"
+            >
+              {isRotating ? "Pause" : "Play"}
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 text-center">Simulated 360° rotation view</p>
+        </div>
+      </div>
+
+      {/* Product Details - Below media */}
+      <div className="max-w-3xl">
+        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">{product.metal} · {product.purity}</p>
+        <h1 className="font-display text-2xl md:text-3xl font-bold mb-3">{product.name}</h1>
+
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-0.5">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} size={14} className={i < Math.floor(product.rating) ? "fill-primary text-primary" : "text-muted"} />
+            ))}
+          </div>
+          <span className="text-sm text-muted-foreground">{product.rating} ({product.reviewCount} reviews)</span>
+        </div>
+
+        <div className="flex items-baseline gap-3 mb-6">
+          <span className="text-2xl font-bold text-foreground">₹{product.price.toLocaleString()}</span>
+          {product.originalPrice && (
+            <>
+              <span className="text-lg text-muted-foreground line-through">₹{product.originalPrice.toLocaleString()}</span>
+              <span className="text-sm font-semibold text-destructive">
+                {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% off
+              </span>
+            </>
+          )}
+        </div>
+
+        <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
+
+        <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+          <div className="bg-secondary rounded-lg p-3">
+            <span className="text-muted-foreground">Weight</span>
+            <p className="font-semibold">{product.weight}</p>
+          </div>
+          <div className="bg-secondary rounded-lg p-3">
+            <span className="text-muted-foreground">Purity</span>
+            <p className="font-semibold">{product.purity}</p>
           </div>
         </div>
 
-        {/* Details */}
-        <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">{product.metal} · {product.purity}</p>
-          <h1 className="font-display text-2xl md:text-3xl font-bold mb-3">{product.name}</h1>
-
-          <div className="flex items-center gap-2 mb-4">
-            <div className="flex items-center gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={14} className={i < Math.floor(product.rating) ? "fill-primary text-primary" : "text-muted"} />
-              ))}
-            </div>
-            <span className="text-sm text-muted-foreground">{product.rating} ({product.reviewCount} reviews)</span>
+        {/* Quantity */}
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-sm font-medium">Qty:</span>
+          <div className="flex items-center border border-border rounded-lg">
+            <button onClick={() => setQty(Math.max(1, qty - 1))} className="p-2"><Minus size={14} /></button>
+            <span className="px-4 text-sm font-medium">{qty}</span>
+            <button onClick={() => setQty(qty + 1)} className="p-2"><Plus size={14} /></button>
           </div>
+        </div>
 
-          <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-2xl font-bold text-foreground">₹{product.price.toLocaleString()}</span>
-            {product.originalPrice && (
-              <>
-                <span className="text-lg text-muted-foreground line-through">₹{product.originalPrice.toLocaleString()}</span>
-                <span className="text-sm font-semibold text-destructive">
-                  {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% off
-                </span>
-              </>
-            )}
-          </div>
-
-          <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
-
-          <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-            <div className="bg-secondary rounded-lg p-3">
-              <span className="text-muted-foreground">Weight</span>
-              <p className="font-semibold">{product.weight}</p>
-            </div>
-            <div className="bg-secondary rounded-lg p-3">
-              <span className="text-muted-foreground">Purity</span>
-              <p className="font-semibold">{product.purity}</p>
-            </div>
-          </div>
-
-          {/* Quantity */}
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-sm font-medium">Qty:</span>
-            <div className="flex items-center border border-border rounded-lg">
-              <button onClick={() => setQty(Math.max(1, qty - 1))} className="p-2"><Minus size={14} /></button>
-              <span className="px-4 text-sm font-medium">{qty}</span>
-              <button onClick={() => setQty(qty + 1)} className="p-2"><Plus size={14} /></button>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-3 mb-6">
-            <button
-              onClick={() => { for (let i = 0; i < qty; i++) addToCart(product); }}
-              className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3 rounded-lg font-medium text-sm hover:opacity-90 transition-opacity"
-            >
-              <ShoppingBag size={16} /> Add to Cart
-            </button>
-            <button
-              onClick={() => toggleWishlist(product)}
-              className={`p-3 rounded-lg border ${wishlisted ? "border-primary bg-accent" : "border-border"}`}
-            >
-              <Heart size={18} className={wishlisted ? "fill-primary text-primary" : ""} />
-            </button>
-          </div>
-
-          <Link
-            to="/checkout"
+        {/* Actions */}
+        <div className="flex gap-3 mb-4">
+          <button
             onClick={() => { for (let i = 0; i < qty; i++) addToCart(product); }}
-            className="block w-full text-center border border-primary text-primary py-3 rounded-lg font-medium text-sm hover:bg-accent transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3 rounded-lg font-medium text-sm hover:opacity-90 transition-opacity"
           >
-            Buy Now
-          </Link>
+            <ShoppingBag size={16} /> Add to Cart
+          </button>
+          <button
+            onClick={() => toggleWishlist(product)}
+            className={`p-3 rounded-lg border ${wishlisted ? "border-primary bg-accent" : "border-border"}`}
+          >
+            <Heart size={18} className={wishlisted ? "fill-primary text-primary" : ""} />
+          </button>
         </div>
+
+        <Link
+          to="/checkout"
+          onClick={() => { for (let i = 0; i < qty; i++) addToCart(product); }}
+          className="block w-full text-center border border-primary text-primary py-3 rounded-lg font-medium text-sm hover:bg-accent transition-colors"
+        >
+          Buy Now
+        </Link>
       </div>
 
       {/* Reviews */}
