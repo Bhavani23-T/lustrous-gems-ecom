@@ -14,7 +14,16 @@ const ProductDetail = () => {
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isRotating, setIsRotating] = useState(true);
 
-  // Simulated 360° rotation by cycling images
+  // Reset all state when product changes (fixes product switch & "You May Like" nav bugs)
+  useEffect(() => {
+    setSelectedImage(0);
+    setQty(1);
+    setRotationAngle(0);
+    setIsRotating(true);
+    window.scrollTo(0, 0);
+  }, [id]);
+
+  // Simulated 360° rotation by cycling images - keyed to current product
   useEffect(() => {
     if (!product || !isRotating) return;
     const interval = setInterval(() => {
