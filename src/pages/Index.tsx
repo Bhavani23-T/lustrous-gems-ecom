@@ -5,8 +5,8 @@ import { categories, products } from "@/data/mockData";
 import ProductCard from "@/components/ProductCard";
 import hero3 from "@/assets/hero-3.png";
 
-const features = [
-  { icon: Sparkles, title: "Certified Purity", desc: "BIS Hallmarked" },
+const marqueeItems = [
+  { icon: Sparkles, title: "Certified Purity", desc: "BIS Hallmarked Jewellery" },
   { icon: Truck, title: "Free Shipping", desc: "On orders above ₹999" },
   { icon: ShieldCheck, title: "Lifetime Exchange", desc: "On all gold jewellery" },
   { icon: RotateCcw, title: "Easy Returns", desc: "15-day return policy" },
@@ -18,50 +18,41 @@ const Index = () => {
 
   return (
     <>
-      {/* Hero - single image */}
+      {/* Hero */}
       <section className="relative h-[60vh] md:h-[80vh] overflow-hidden">
         <img src={hero3} alt="Diamond Elegance" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
-        <div className="relative z-10 container mx-auto px-4 h-full flex items-center absolute inset-0">
+        <div className="absolute inset-0 z-10 container mx-auto px-4 h-full flex items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-lg"
           >
-            <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-4">
-              Diamond Elegance
+            <p className="text-primary font-display text-sm md:text-base tracking-[0.3em] uppercase mb-2">Welcome to</p>
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-4">
+              LUMIÈRE
             </h1>
-            <p className="text-muted-foreground text-base md:text-lg mb-6">Exquisite diamond pieces that captivate and shine</p>
-            <div className="flex gap-3">
-              <Link
-                to="/products"
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium text-sm hover:opacity-90 transition-opacity"
-              >
-                Shop Collection <ArrowRight size={16} />
-              </Link>
-              <Link
-                to="/products?metal=gold"
-                className="inline-flex items-center gap-2 border border-foreground/30 text-foreground px-6 py-3 rounded-lg font-medium text-sm hover:bg-foreground/5 transition-colors"
-              >
-                Explore Bridal
-              </Link>
-            </div>
+            <p className="text-muted-foreground text-base md:text-lg mb-6">Exquisite jewellery that captivates and shines</p>
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+            >
+              Shop Now <ArrowRight size={16} />
+            </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="border-b border-border">
-        <div className="container mx-auto px-4 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {features.map((f) => (
-              <div key={f.title} className="flex items-center gap-3 justify-center">
-                <f.icon size={20} className="text-primary shrink-0" />
-                <div>
-                  <p className="text-sm font-semibold">{f.title}</p>
-                  <p className="text-xs text-muted-foreground">{f.desc}</p>
-                </div>
+      {/* Scrolling Marquee */}
+      <section className="border-b border-border bg-secondary/60 overflow-hidden">
+        <div className="marquee-container py-3">
+          <div className="marquee-track">
+            {[...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, i) => (
+              <div key={i} className="flex items-center gap-2 px-8 shrink-0">
+                <item.icon size={18} className="text-primary shrink-0" />
+                <span className="text-sm font-semibold whitespace-nowrap">{item.title}</span>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">— {item.desc}</span>
               </div>
             ))}
           </div>
