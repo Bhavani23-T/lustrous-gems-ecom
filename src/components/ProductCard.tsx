@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Heart, ShoppingBag, Star, Eye } from "lucide-react";
 import { Product } from "@/data/mockData";
 import { useStore } from "@/context/StoreContext";
 import { motion } from "framer-motion";
+import { QuickView } from "./QuickView";
 
 const ProductCard = ({ product }: { product: Product }) => {
   const { addToCart, toggleWishlist, isInWishlist } = useStore();
@@ -28,48 +29,55 @@ const ProductCard = ({ product }: { product: Product }) => {
 
       {/* Wishlist */}
       <button
-        onClick={() => toggleWishlist(product)}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
         className="absolute top-3 right-3 z-10 p-2 bg-background/80 backdrop-blur rounded-full hover:bg-background transition-colors"
       >
         <Heart size={16} className={wishlisted ? "fill-primary text-primary" : "text-muted-foreground"} />
       </button>
 
-      {/* Image */}
-      <Link to={`/product/${product.id}`}>
-        <div className="aspect-square overflow-hidden bg-muted">
+      {/* Image and Quick View Trigger */}
+      <div className="relative aspect-square overflow-hidden bg-muted">
+        <Link to={`/product/${product.id}`} className="block h-full">
           <img
             src={product.image}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
+        </Link>
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+          <QuickView product={product}>
+            <button className="bg-background text-foreground text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 pointer-events-auto">
+              <Eye size={14} /> Quick View
+            </button>
+          </QuickView>
         </div>
-      </Link>
+      </div>
 
       {/* Info */}
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         <Link to={`/product/${product.id}`}>
-          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{product.metal} · {product.purity}</p>
-          <h3 className="font-display text-sm font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-1">
+          <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider mb-1 font-bold">{product.metal} · {product.purity}</p>
+          <h3 className="font-display text-sm sm:text-base font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1">
             {product.name}
           </h3>
         </Link>
         <div className="flex items-center gap-1 mb-2">
-          <Star size={12} className="fill-primary text-primary" />
-          <span className="text-xs text-muted-foreground">{product.rating} ({product.reviewCount})</span>
+          <Star size={10} className="fill-primary text-primary" />
+          <span className="text-[10px] sm:text-xs text-muted-foreground font-medium">{product.rating} ({product.reviewCount})</span>
         </div>
         <div className="flex items-center justify-between">
-          <div>
-            <span className="font-semibold text-foreground">₹{product.price.toLocaleString()}</span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-0 sm:gap-2">
+            <span className="font-black text-sm sm:text-base text-foreground">₹{product.price.toLocaleString()}</span>
             {product.originalPrice && (
-              <span className="text-xs text-muted-foreground line-through ml-2">₹{product.originalPrice.toLocaleString()}</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground line-through">₹{product.originalPrice.toLocaleString()}</span>
             )}
           </div>
           <button
-            onClick={() => addToCart(product)}
-            className="p-2 bg-primary text-primary-foreground rounded-full hover:opacity-90 transition-opacity"
+            onClick={(e) => { e.preventDefault(); addToCart(product); }}
+            className="p-2 sm:p-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-all active:scale-90 shadow-md shadow-primary/10"
           >
-            <ShoppingBag size={14} />
+            <ShoppingBag size={16} />
           </button>
         </div>
       </div>

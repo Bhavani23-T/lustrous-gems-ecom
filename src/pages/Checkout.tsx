@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useStore } from "@/context/StoreContext";
 import { ShoppingBag, CheckCircle } from "lucide-react";
+import { GiftingOptions } from "@/components/GiftingOptions";
 
 const Checkout = () => {
-  const { cart, cartTotal, clearCart } = useStore();
+  const { cart, cartTotal, clearCart, placeOrder } = useStore();
   const navigate = useNavigate();
   const [placed, setPlaced] = useState(false);
+  const [isGift, setIsGift] = useState(false);
+  const [giftMessage, setGiftMessage] = useState("");
 
   if (cart.length === 0 && !placed) {
     return (
@@ -34,6 +37,19 @@ const Checkout = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Create actual order object
+    const newOrder = {
+      id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+      date: new Date().toISOString().split("T")[0],
+      items: [...cart],
+      total: cartTotal,
+      status: "Confirmed" as const,
+      isGift,
+      giftMessage: isGift ? giftMessage : undefined
+    };
+
+    placeOrder(newOrder);
     clearCart();
     setPlaced(true);
   };
@@ -54,6 +70,14 @@ const Checkout = () => {
               <input placeholder="PIN Code" required className="px-4 py-2.5 bg-secondary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
           </div>
+
+          <GiftingOptions
+            isGift={isGift}
+            setIsGift={setIsGift}
+            giftMessage={giftMessage}
+            setGiftMessage={setGiftMessage}
+          />
+
           <div className="bg-card border border-border rounded-lg p-6">
             <h3 className="font-display font-semibold mb-4">Payment Method</h3>
             <div className="space-y-3">

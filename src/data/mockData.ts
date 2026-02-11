@@ -37,12 +37,16 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
+export type OrderStatus = "Confirmed" | "Packed" | "Shipped" | "Out for Delivery" | "Delivered";
+
 export interface Order {
   id: string;
   date: string;
   items: CartItem[];
   total: number;
-  status: "Processing" | "Shipped" | "Delivered" | "Cancelled";
+  status: OrderStatus;
+  isGift?: boolean;
+  giftMessage?: string;
 }
 
 export const categories = [
@@ -75,26 +79,26 @@ const pick = (arr: string[], i: number) => arr[i % arr.length];
 
 export const products: Product[] = [
   // === GOLD (10 products) ===
-  { id: "g1", name: "Gold Filigree Wedding Neckset", price: 125999, originalPrice: 139999, image: colGold1, images: [colGold1, colGold2, catNecklaces], category: "necksets", metal: "Gold", purity: "22K", weight: "32g", description: "A magnificent traditional gold neckset perfect for weddings and celebrations. Intricate filigree work.", rating: 4.9, reviewCount: 201, isBestseller: true },
-  { id: "g2", name: "Gold Classic Band Ring", price: 18999, image: colGold2, images: [colGold2, colGold1], category: "rings", metal: "Gold", purity: "22K", weight: "4.5g", description: "A timeless gold band ring with ornate scroll patterns. Perfect for everyday elegance.", rating: 4.7, reviewCount: 156 },
-  { id: "g3", name: "Gold Rope Chain 20\"", price: 45999, originalPrice: 52999, image: colGold1, images: [colGold1, colGold2], category: "chains", metal: "Gold", purity: "22K", weight: "12g", description: "Classic rope chain in lustrous 22K gold. A wardrobe essential.", rating: 4.8, reviewCount: 89, isNew: true },
-  { id: "g4", name: "Gold Temple Bangles Set", price: 89999, image: catBangles, images: [catBangles, colGold1, colGold2], category: "bangles", metal: "Gold", purity: "22K", weight: "28g", description: "Set of 4 traditional temple design bangles in 22K gold.", rating: 4.9, reviewCount: 312, isBestseller: true },
-  { id: "g5", name: "Gold Link Bracelet", price: 34999, image: colGold2, images: [colGold2, colGold1], category: "bracelets", metal: "Gold", purity: "18K", weight: "9g", description: "Modern link bracelet in warm rose gold. Sleek and stylish.", rating: 4.6, reviewCount: 67 },
-  { id: "g6", name: "Gold Jhumka Earrings", price: 24999, image: catEarrings, images: [catEarrings, colGold1], category: "earrings", metal: "Gold", purity: "22K", weight: "8g", description: "Traditional jhumka earrings with intricate gold work and pearl drops.", rating: 4.8, reviewCount: 178, isBestseller: true },
-  { id: "g7", name: "Gold Bridal Neckset Deluxe", price: 199999, originalPrice: 225999, image: colGold1, images: [colGold1, catNecklaces, colGold2], category: "necksets", metal: "Gold", purity: "22K", weight: "48g", description: "Premium bridal neckset with matching earrings. Heirloom quality craftsmanship.", rating: 5.0, reviewCount: 45 },
-  { id: "g8", name: "Gold Cocktail Ring", price: 22999, image: colGold2, images: [colGold2, catRings], category: "rings", metal: "Gold", purity: "18K", weight: "5.2g", description: "Statement cocktail ring with floral motifs in polished gold.", rating: 4.5, reviewCount: 92, isNew: true },
-  { id: "g9", name: "Gold Wheat Chain 24\"", price: 58999, image: colGold1, images: [colGold1, colGold2], category: "chains", metal: "Gold", purity: "24K", weight: "15g", description: "Premium 24K wheat chain, perfect for pendants or standalone wear.", rating: 4.7, reviewCount: 34 },
-  { id: "g10", name: "Gold Kada Bangle", price: 67999, image: catBangles, images: [catBangles, colGold1], category: "bangles", metal: "Gold", purity: "22K", weight: "22g", description: "Solid gold kada with traditional engraving. A classic men's accessory.", rating: 4.8, reviewCount: 123 },
+  { id: "g1", name: "Gold Filigree Wedding Neckset", price: 125999, originalPrice: 139999, image: colGold1, images: [colGold1, colGold2, catNecklaces, colGold1, colGold2], category: "necksets", metal: "Gold", purity: "22K", weight: "32g", description: "A magnificent traditional gold neckset perfect for weddings and celebrations. Intricate filigree work.", rating: 4.9, reviewCount: 201, isBestseller: true },
+  { id: "g2", name: "Gold Classic Band Ring", price: 18999, image: colGold2, images: [colGold2, colGold1, catRings, colGold2, colGold1], category: "rings", metal: "Gold", purity: "22K", weight: "4.5g", description: "A timeless gold band ring with ornate scroll patterns. Perfect for everyday elegance.", rating: 4.7, reviewCount: 156 },
+  { id: "g3", name: "Gold Rope Chain 20\"", price: 45999, originalPrice: 52999, image: colGold1, images: [colGold1, colGold2, colGold1, colGold2, colGold1], category: "chains", metal: "Gold", purity: "22K", weight: "12g", description: "Classic rope chain in lustrous 22K gold. A wardrobe essential.", rating: 4.8, reviewCount: 89, isNew: true },
+  { id: "g4", name: "Gold Temple Bangles Set", price: 89999, image: catBangles, images: [catBangles, colGold1, colGold2, catBangles, colGold1], category: "bangles", metal: "Gold", purity: "22K", weight: "28g", description: "Set of 4 traditional temple design bangles in 22K gold.", rating: 4.9, reviewCount: 312, isBestseller: true },
+  { id: "g5", name: "Gold Link Bracelet", price: 34999, image: colGold2, images: [colGold2, colGold1, colGold2, colGold1, colGold2], category: "bracelets", metal: "Gold", purity: "18K", weight: "9g", description: "Modern link bracelet in warm rose gold. Sleek and stylish.", rating: 4.6, reviewCount: 67 },
+  { id: "g6", name: "Gold Jhumka Earrings", price: 24999, image: catEarrings, images: [catEarrings, colGold1, catEarrings, colGold1, catEarrings], category: "earrings", metal: "Gold", purity: "22K", weight: "8g", description: "Traditional jhumka earrings with intricate gold work and pearl drops.", rating: 4.8, reviewCount: 178, isBestseller: true },
+  { id: "g7", name: "Gold Bridal Neckset Deluxe", price: 199999, originalPrice: 225999, image: colGold1, images: [colGold1, catNecklaces, colGold2, colGold1, catNecklaces], category: "necksets", metal: "Gold", purity: "22K", weight: "48g", description: "Premium bridal neckset with matching earrings. Heirloom quality craftsmanship.", rating: 5.0, reviewCount: 45 },
+  { id: "g8", name: "Gold Cocktail Ring", price: 22999, image: colGold2, images: [colGold2, catRings, colGold2, catRings, colGold2], category: "rings", metal: "Gold", purity: "18K", weight: "5.2g", description: "Statement cocktail ring with floral motifs in polished gold.", rating: 4.5, reviewCount: 92, isNew: true },
+  { id: "g9", name: "Gold Wheat Chain 24\"", price: 58999, image: colGold1, images: [colGold1, colGold2, colGold1, colGold2, colGold1], category: "chains", metal: "Gold", purity: "24K", weight: "15g", description: "Premium 24K wheat chain, perfect for pendants or standalone wear.", rating: 4.7, reviewCount: 34 },
+  { id: "g10", name: "Gold Kada Bangle", price: 67999, image: catBangles, images: [catBangles, colGold1, catBangles, colGold1, catBangles], category: "bangles", metal: "Gold", purity: "22K", weight: "22g", description: "Solid gold kada with traditional engraving. A classic men's accessory.", rating: 4.8, reviewCount: 123 },
 
   // === DIAMOND (8 products) ===
-  { id: "d1", name: "Diamond Solitaire Pendant", price: 89999, originalPrice: 99999, image: colDiamond1, images: [colDiamond1, colDiamond2, product2], category: "necklaces", metal: "Diamond", purity: "18K", weight: "3.2g", description: "A breathtaking solitaire diamond pendant on a delicate white gold chain.", rating: 4.9, reviewCount: 89, isBestseller: true },
-  { id: "d2", name: "Diamond Engagement Ring", price: 145999, image: colDiamond2, images: [colDiamond2, colDiamond1, catRings], category: "rings", metal: "Diamond", purity: "18K", weight: "4.1g", description: "Classic solitaire diamond engagement ring. Brilliant cut, exceptional clarity.", rating: 5.0, reviewCount: 201 },
-  { id: "d3", name: "Diamond Stud Earrings", price: 54999, image: product3, images: [product3, colDiamond1, colDiamond2], category: "earrings", metal: "Diamond", purity: "18K", weight: "2.1g", description: "Classic diamond stud earrings in white gold. Timeless sparkle.", rating: 4.7, reviewCount: 256, isBestseller: true },
-  { id: "d4", name: "Diamond Tennis Bracelet", price: 189999, originalPrice: 215999, image: colDiamond1, images: [colDiamond1, colDiamond2], category: "bracelets", metal: "Diamond", purity: "18K", weight: "8.5g", description: "Stunning tennis bracelet with 3 carats of brilliant diamonds.", rating: 4.9, reviewCount: 67 },
-  { id: "d5", name: "Diamond Cluster Ring", price: 78999, image: colDiamond2, images: [colDiamond2, catRings], category: "rings", metal: "Diamond", purity: "18K", weight: "3.8g", description: "A dazzling cluster of diamonds set in white gold. Show-stopping brilliance.", rating: 4.7, reviewCount: 34, isNew: true },
-  { id: "d6", name: "Diamond Drop Earrings", price: 112999, image: product3, images: [product3, colDiamond1], category: "earrings", metal: "Diamond", purity: "18K", weight: "4.2g", description: "Elegant drop earrings with cascading diamonds. Red carpet worthy.", rating: 4.8, reviewCount: 78 },
-  { id: "d7", name: "Diamond Rivière Necklace", price: 299999, originalPrice: 349999, image: colDiamond1, images: [colDiamond1, product2], category: "necklaces", metal: "Diamond", purity: "18K", weight: "12g", description: "A luxurious diamond rivière necklace. 5 carats of graduated brilliance.", rating: 5.0, reviewCount: 23 },
-  { id: "d8", name: "Diamond Eternity Band", price: 67999, image: colDiamond2, images: [colDiamond2, product4], category: "rings", metal: "Diamond", purity: "18K", weight: "3.5g", description: "Channel-set diamond eternity band. Symbol of everlasting love.", rating: 4.9, reviewCount: 145 },
+  { id: "d1", name: "Diamond Solitaire Pendant", price: 89999, originalPrice: 99999, image: colDiamond1, images: [colDiamond1, colDiamond2, product2, colDiamond1, colDiamond2], category: "necklaces", metal: "Diamond", purity: "18K", weight: "3.2g", description: "A breathtaking solitaire diamond pendant on a delicate white gold chain.", rating: 4.9, reviewCount: 89, isBestseller: true },
+  { id: "d2", name: "Diamond Engagement Ring", price: 145999, image: colDiamond2, images: [colDiamond2, colDiamond1, catRings, colDiamond2, colDiamond1], category: "rings", metal: "Diamond", purity: "18K", weight: "4.1g", description: "Classic solitaire diamond engagement ring. Brilliant cut, exceptional clarity.", rating: 5.0, reviewCount: 201 },
+  { id: "d3", name: "Diamond Stud Earrings", price: 54999, image: product3, images: [product3, colDiamond1, colDiamond2, product3, colDiamond1], category: "earrings", metal: "Diamond", purity: "18K", weight: "2.1g", description: "Classic diamond stud earrings in white gold. Timeless sparkle.", rating: 4.7, reviewCount: 256, isBestseller: true },
+  { id: "d4", name: "Diamond Tennis Bracelet", price: 189999, originalPrice: 215999, image: colDiamond1, images: [colDiamond1, colDiamond2, colDiamond1, colDiamond2, colDiamond1], category: "bracelets", metal: "Diamond", purity: "18K", weight: "8.5g", description: "Stunning tennis bracelet with 3 carats of brilliant diamonds.", rating: 4.9, reviewCount: 67 },
+  { id: "d5", name: "Diamond Cluster Ring", price: 78999, image: colDiamond2, images: [colDiamond2, catRings, colDiamond2, catRings, colDiamond2], category: "rings", metal: "Diamond", purity: "18K", weight: "3.8g", description: "A dazzling cluster of diamonds set in white gold. Show-stopping brilliance.", rating: 4.7, reviewCount: 34, isNew: true },
+  { id: "d6", name: "Diamond Drop Earrings", price: 112999, image: product3, images: [product3, colDiamond1, product3, colDiamond1, product3], category: "earrings", metal: "Diamond", purity: "18K", weight: "4.2g", description: "Elegant drop earrings with cascading diamonds. Red carpet worthy.", rating: 4.8, reviewCount: 78 },
+  { id: "d7", name: "Diamond Rivière Necklace", price: 299999, originalPrice: 349999, image: colDiamond1, images: [colDiamond1, product2, colDiamond1, product2, colDiamond1], category: "necklaces", metal: "Diamond", purity: "18K", weight: "12g", description: "A luxurious diamond rivière necklace. 5 carats of graduated brilliance.", rating: 5.0, reviewCount: 23 },
+  { id: "d8", name: "Diamond Eternity Band", price: 67999, image: colDiamond2, images: [colDiamond2, product4, colDiamond2, product4, colDiamond2], category: "rings", metal: "Diamond", purity: "18K", weight: "3.5g", description: "Channel-set diamond eternity band. Symbol of everlasting love.", rating: 4.9, reviewCount: 145 },
 
   // === SILVER (7 products) ===
   { id: "s1", name: "Silver Twist Ring", price: 2999, image: colSilver1, images: [colSilver1, colSilver2], category: "rings", metal: "Silver", purity: "Sterling Silver", weight: "4g", description: "Minimalist twisted silver ring. Perfect for daily wear.", rating: 4.5, reviewCount: 312 },
@@ -141,9 +145,35 @@ export const mockOrders: Order[] = [
 ];
 
 export const mockReviews = [
-  { id: "1", user: "Priya S.", rating: 5, comment: "Absolutely stunning! The quality is exceptional.", date: "2026-01-15" },
-  { id: "2", user: "Anita M.", rating: 4, comment: "Beautiful piece, packaging was premium too.", date: "2026-01-20" },
-  { id: "3", user: "Ritu K.", rating: 5, comment: "Perfect gift for my anniversary. Wife loved it!", date: "2026-02-01" },
+  {
+    id: "1",
+    user: "Priya S.",
+    rating: 5,
+    comment: "Absolutely stunning! The quality is exceptional and it looks much better in person.",
+    date: "2026-01-15",
+    images: ["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=200", "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=200"]
+  },
+  {
+    id: "2",
+    user: "Anita M.",
+    rating: 4,
+    comment: "Beautiful piece, packaging was premium too. Delivery was on time.",
+    date: "2026-01-20",
+    images: ["https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&q=80&w=200"]
+  },
+  {
+    id: "3",
+    user: "Ritu K.",
+    rating: 5,
+    comment: "Perfect gift for my anniversary. My wife loved the intricate design!",
+    date: "2026-02-01",
+    images: []
+  },
+];
+
+export const festivalCollections = [
+  { id: "fc1", name: "The Wedding Edit", description: "Breathtaking bridal jewelry for your special day", image: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1974&auto=format&fit=crop", slug: "wedding" },
+  { id: "fc2", name: "Festive Sparkle", description: "Vibrant designs for every celebration", image: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=2069&auto=format&fit=crop", slug: "festive" },
 ];
 
 // Admin mock data

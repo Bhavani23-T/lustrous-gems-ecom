@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { StoreProvider } from "@/context/StoreContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import Layout from "@/components/layout/Layout";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
@@ -24,37 +25,45 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+import { Navigate, Outlet } from "react-router-dom";
+import { useStore } from "@/context/StoreContext";
+
+import ScrollToTop from "./components/ScrollToTop";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <StoreProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* User pages */}
-            <Route path="/" element={<Layout><Index /></Layout>} />
-            <Route path="/products" element={<Layout><Products /></Layout>} />
-            <Route path="/product/:id" element={<Layout><ProductDetail /></Layout>} />
-            <Route path="/cart" element={<Layout><Cart /></Layout>} />
-            <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
-            <Route path="/checkout" element={<Layout><Checkout /></Layout>} />
-            <Route path="/orders" element={<Layout><Orders /></Layout>} />
-            <Route path="/profile" element={<Layout><Profile /></Layout>} />
+        <LanguageProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <Routes>
+              {/* User pages */}
+              <Route path="/" element={<Layout><Index /></Layout>} />
+              <Route path="/products" element={<Layout><Products /></Layout>} />
+              <Route path="/product/:id" element={<Layout><ProductDetail /></Layout>} />
+              <Route path="/cart" element={<Layout><Cart /></Layout>} />
+              <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
+              <Route path="/checkout" element={<Layout><Checkout /></Layout>} />
+              <Route path="/orders" element={<Layout><Orders /></Layout>} />
+              <Route path="/profile" element={<Layout><Profile /></Layout>} />
 
-            {/* Admin pages */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="reviews" element={<AdminReviews />} />
-              <Route path="reports" element={<AdminReports />} />
-            </Route>
+              {/* Admin pages */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="reviews" element={<AdminReviews />} />
+                <Route path="reports" element={<AdminReports />} />
+              </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </LanguageProvider>
       </StoreProvider>
     </TooltipProvider>
   </QueryClientProvider>

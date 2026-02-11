@@ -1,73 +1,58 @@
-# Welcome to your Lovable project
+# LUMIÈRE | Fine Jewellery E-commerce
 
-## Project info
+An exquisite, premium e-commerce platform for handcrafted fine jewellery. Designed for elegance and crafted for a seamless shopping experience.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## ✨ Features
 
-## How can I edit this code?
+- **Premium UI/UX**: Ultra-modern, luxurious design with smooth animations.
+- **Product Catalog**: Multi-category support (Gold, Diamond, Silver, Platinum).
+- **Advanced Filtering**: Filter by metal type, purity, category, and price.
+- **Detailed Product Views**: High-quality imagery, interactive viewer, and EMI calculator.
+- **Smart Cart & Wishlist**: Seamless shopping bag and wishlist management.
+- **Gifting Options**: Premium gift wrapping and personalized messages.
+- **Order Tracking**: Real-time visual tracking of order status.
+- **Responsive Design**: Flawless experience across all device sizes.
+- **Multi-language Support**: English and Telugu translations.
 
-There are several ways of editing your application.
+## 🚀 Tech Stack
 
-**Use Lovable**
+- **React 18** with **TypeScript**
+- **Vite** (Fast Build Tool)
+- **Tailwind CSS** (Styling)
+- **Framer Motion** (Animations)
+- **Radix UI** (Accessible Components)
+- **Lucide React** (Icons)
+- **Sonner** (Toasts)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🛠️ Local Development
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Follow these steps to set up the project locally:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# 1. Clone the repository
+git clone <repository-url>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Navigate to the project directory
+cd lustrous-gems-ecom
 
-# Step 3: Install the necessary dependencies.
-npm i
+# 3. Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. Start the development server
 npm run dev
+
+# 5. Run tests
+npm test
 ```
 
-**Edit a file directly in GitHub**
+## 📦 Project Structure
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `src/components`: Reusable UI components.
+- `src/context`: State management (Store, Language).
+- `src/data`: Mock data and types.
+- `src/pages`: Main application pages and Admin dashboard.
+- `src/lib`: Utility functions.
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+© 2026 Lumière Jewellery. Every Moment Deserves A Little Sparkle.
