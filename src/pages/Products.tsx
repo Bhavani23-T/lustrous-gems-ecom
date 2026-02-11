@@ -123,44 +123,134 @@ const Products = () => {
   const FilterPanel = () => (
     <div className="space-y-6">
       <div>
-        <h4 className="font-semibold text-sm mb-3">Sub-Category</h4>
-        <div className="space-y-2">
+        <div className="flex justify-between items-center mb-3">
+          <h4 className="font-semibold text-sm">Category</h4>
+          {selectedCategory && (
+            <button
+              onClick={() => setSelectedCategory("")}
+              className="text-[10px] uppercase font-bold text-primary hover:underline"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+        <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
           {allSubcategories.map((c) => (
-            <label key={c} className="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="radio" name="category" checked={selectedCategory === c.toLowerCase().replace(/ /g, "-")} onChange={() => setSelectedCategory(c.toLowerCase().replace(/ /g, "-"))} className="accent-primary" />
-              {c}
+            <label key={c} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+              <input
+                type="radio"
+                name="category"
+                checked={selectedCategory === c.toLowerCase().replace(/ /g, "-")}
+                onChange={() => setSelectedCategory(c.toLowerCase().replace(/ /g, "-"))}
+                className="accent-primary w-4 h-4"
+              />
+              <span className={selectedCategory === c.toLowerCase().replace(/ /g, "-") ? "font-bold text-primary" : ""}>
+                {c}
+              </span>
             </label>
           ))}
         </div>
       </div>
+
+      <div className="w-full h-px bg-border/50" />
+
       <div>
-        <h4 className="font-semibold text-sm mb-3">Metal</h4>
+        <div className="flex justify-between items-center mb-3">
+          <h4 className="font-semibold text-sm">Metal</h4>
+          {selectedMetal && (
+            <button
+              onClick={() => setSelectedMetal("")}
+              className="text-[10px] uppercase font-bold text-primary hover:underline"
+            >
+              Clear
+            </button>
+          )}
+        </div>
         <div className="space-y-2">
           {metalTypes.map((m) => (
-            <label key={m} className="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="radio" name="metal" checked={selectedMetal === m.toLowerCase().replace(/ /g, "-")} onChange={() => setSelectedMetal(m.toLowerCase().replace(/ /g, "-"))} className="accent-primary" />
-              {m}
+            <label key={m} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+              <input
+                type="radio"
+                name="metal"
+                checked={selectedMetal === m.toLowerCase().replace(/ /g, "-")}
+                onChange={() => setSelectedMetal(m.toLowerCase().replace(/ /g, "-"))}
+                className="accent-primary w-4 h-4"
+              />
+              <span className={selectedMetal === m.toLowerCase().replace(/ /g, "-") ? "font-bold text-primary" : ""}>
+                {m}
+              </span>
             </label>
           ))}
         </div>
       </div>
+
+      <div className="w-full h-px bg-border/50" />
+
       <div>
-        <h4 className="font-semibold text-sm mb-3">Purity</h4>
+        <div className="flex justify-between items-center mb-3">
+          <h4 className="font-semibold text-sm">Purity</h4>
+          {selectedPurity && (
+            <button
+              onClick={() => setSelectedPurity("")}
+              className="text-[10px] uppercase font-bold text-primary hover:underline"
+            >
+              Clear
+            </button>
+          )}
+        </div>
         <div className="space-y-2">
           {purityOptions.map((p) => (
-            <label key={p} className="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="radio" name="purity" checked={selectedPurity === p} onChange={() => setSelectedPurity(p)} className="accent-primary" />
-              {p}
+            <label key={p} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+              <input
+                type="radio"
+                name="purity"
+                checked={selectedPurity === p}
+                onChange={() => setSelectedPurity(p)}
+                className="accent-primary w-4 h-4"
+              />
+              <span className={selectedPurity === p ? "font-bold text-primary" : ""}>
+                {p}
+              </span>
             </label>
           ))}
         </div>
       </div>
+
+      <div className="w-full h-px bg-border/50" />
+
       <div>
-        <h4 className="font-semibold text-sm mb-3">Price Range</h4>
-        <input type="range" min={0} max={400000} step={5000} value={priceRange[1]} onChange={(e) => setPriceRange([0, Number(e.target.value)])} className="w-full accent-primary" />
-        <p className="text-xs text-muted-foreground mt-1">Up to ₹{priceRange[1].toLocaleString()}</p>
+        <div className="flex justify-between items-center mb-3">
+          <h4 className="font-semibold text-sm">Price Range</h4>
+          {priceRange[1] < 400000 && (
+            <button
+              onClick={() => setPriceRange([0, 400000])}
+              className="text-[10px] uppercase font-bold text-primary hover:underline"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+        <input
+          type="range"
+          min={0}
+          max={400000}
+          step={5000}
+          value={priceRange[1]}
+          onChange={(e) => setPriceRange([0, Number(e.target.value)])}
+          className="w-full accent-primary cursor-pointer h-2 bg-secondary rounded-lg appearance-none"
+        />
+        <div className="flex justify-between text-xs text-muted-foreground mt-2 font-medium">
+          <span>₹0</span>
+          <span>₹{priceRange[1].toLocaleString()}</span>
+        </div>
       </div>
-      <button onClick={clearFilters} className="text-sm text-primary hover:underline">Clear all filters</button>
+
+      <button
+        onClick={clearFilters}
+        className="w-full py-3 text-xs font-black uppercase tracking-widest text-primary border border-primary/20 hover:bg-primary/5 rounded-xl transition-colors"
+      >
+        Clear all filters
+      </button>
     </div>
   );
 
