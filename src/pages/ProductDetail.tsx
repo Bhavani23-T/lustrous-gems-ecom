@@ -44,7 +44,7 @@ const ProductDetail = () => {
   const wishlisted = isInWishlist(product.id);
 
   return (
-    <div className="container mx-auto px-4 py-4 md:py-8 pb-48 md:pb-8">
+    <div className="container mx-auto px-4 py-4 md:py-8 pb-32 md:pb-8">
       {/* Breadcrumbs & Navigation */}
       <div className="flex items-center justify-between mb-4 md:mb-8">
         <BackButton label="Back" />
@@ -58,7 +58,7 @@ const ProductDetail = () => {
       </div>
 
       {/* Main Product Section - Split Layout */}
-      <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 mb-8 md:mb-12">
+      <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 mb-6 md:mb-12">
         {/* Left: Media Section */}
         <div className="lg:col-span-7 space-y-4">
           <ProductViewer images={product.images} name={product.name} />
@@ -101,18 +101,18 @@ const ProductDetail = () => {
             </p>
 
             <div className="grid grid-cols-2 gap-3 mb-6 md:mb-8">
-              <div className="bg-secondary/30 rounded-2xl p-4 border border-border/40 hover:border-primary/20 transition-colors">
+              <div className="bg-secondary/30 rounded-2xl p-3 md:p-4 border border-border/40 hover:border-primary/20 transition-colors">
                 <span className="text-[10px] uppercase tracking-wider text-muted-foreground block mb-1 font-bold">Weight</span>
-                <p className="font-bold text-lg">{product.weight}</p>
+                <p className="font-bold text-base md:text-lg">{product.weight}</p>
               </div>
-              <div className="bg-secondary/30 rounded-2xl p-4 border border-border/40 hover:border-primary/20 transition-colors">
+              <div className="bg-secondary/30 rounded-2xl p-3 md:p-4 border border-border/40 hover:border-primary/20 transition-colors">
                 <span className="text-[10px] uppercase tracking-wider text-muted-foreground block mb-1 font-bold">Purity</span>
-                <p className="font-bold text-lg">{product.purity}</p>
+                <p className="font-bold text-base md:text-lg">{product.purity}</p>
               </div>
             </div>
 
             {/* EMI Calculator Integration */}
-            <div className="mb-6 md:mb-8">
+            <div className="mb-4 md:mb-8">
               <EMICalculator price={product.price} />
             </div>
 
@@ -190,7 +190,7 @@ const ProductDetail = () => {
 
 
       {/* Enhanced Reviews Section */}
-      <section className="mt-12 md:mt-32 border-t border-border/50 pt-12 md:pt-24">
+      <section className="mt-8 md:mt-32 border-t border-border/50 pt-8 md:pt-24">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
           <div>
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">Customer Stories</h2>
@@ -251,7 +251,7 @@ const ProductDetail = () => {
 
       {/* Related Products */}
       {related.length > 0 && (
-        <section className="mt-12 md:mt-32">
+        <section className="mt-8 md:mt-32">
           <div className="flex items-end justify-between mb-8">
             <div>
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-2">You May Also Like</h2>

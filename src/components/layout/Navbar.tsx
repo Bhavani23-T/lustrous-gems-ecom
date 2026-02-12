@@ -35,7 +35,7 @@ const Navbar = () => {
   const isHomePage = location.pathname === "/";
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+    <header className="z-50 bg-background/95 backdrop-blur border-b border-border">
       <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
@@ -48,63 +48,65 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Collections Nav - Hidden on Home Page */}
-          <nav className={`hidden lg:flex items-center gap-1 flex-1 ml-10 overflow-visible ${isHomePage ? "invisible pointer-events-none" : ""}`}>
-            <Link to="/" className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">
-              {t("nav.home")}
-            </Link>
+          {!isHomePage && (
+            <nav className="hidden lg:flex items-center gap-1 flex-1 ml-10 overflow-visible">
+              <Link to="/" className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">
+                {t("nav.home")}
+              </Link>
 
-            {collections.map((col) => (
-              <div
-                key={col}
-                className="relative shrink-0 group"
-                onMouseEnter={() => setOpenCollection(col)}
-                onMouseLeave={() => setOpenCollection(null)}
-              >
-                <button
-                  className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                  onClick={() => navigate(`/products?metal=${metalSlugs[col]}`)}
+              {collections.map((col) => (
+                <div
+                  key={col}
+                  className="relative shrink-0 group"
+                  onMouseEnter={() => setOpenCollection(col)}
+                  onMouseLeave={() => setOpenCollection(null)}
                 >
-                  {col} <ChevronDown size={14} className={`transition-transform duration-300 ${openCollection === col ? "rotate-180" : ""}`} />
-                </button>
+                  <button
+                    className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+                    onClick={() => navigate(`/products?metal=${metalSlugs[col]}`)}
+                  >
+                    {col} <ChevronDown size={14} className={`transition-transform duration-300 ${openCollection === col ? "rotate-180" : ""}`} />
+                  </button>
 
-                <AnimatePresence>
-                  {openCollection === col && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute top-full left-0 mt-0 bg-popover border border-border rounded-xl shadow-xl py-3 w-56 z-50"
-                    >
-                      <Link
-                        to={`/products?metal=${metalSlugs[col]}`}
-                        className="block px-4 py-2 text-sm font-bold text-primary hover:bg-accent transition-colors"
-                        onClick={() => setOpenCollection(null)}
+                  <AnimatePresence>
+                    {openCollection === col && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute top-full left-0 mt-0 bg-popover border border-border rounded-xl shadow-xl py-3 w-56 z-50"
                       >
-                        Explore All {col}
-                      </Link>
-                      <div className="border-t border-border my-2" />
-                      <div className="max-h-60 overflow-y-auto px-1">
-                        {collectionSubcategories[col].map((sub) => (
-                          <Link
-                            key={sub}
-                            to={`/products?metal=${metalSlugs[col]}&category=${subcatSlug(sub)}`}
-                            className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent rounded-md transition-colors"
-                            onClick={() => setOpenCollection(null)}
-                          >
-                            {sub}
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
+                        <Link
+                          to={`/products?metal=${metalSlugs[col]}`}
+                          className="block px-4 py-2 text-sm font-bold text-primary hover:bg-accent transition-colors"
+                          onClick={() => setOpenCollection(null)}
+                        >
+                          Explore All {col}
+                        </Link>
+                        <div className="border-t border-border my-2" />
+                        <div className="max-h-60 overflow-y-auto px-1">
+                          {collectionSubcategories[col].map((sub) => (
+                            <Link
+                              key={sub}
+                              to={`/products?metal=${metalSlugs[col]}&category=${subcatSlug(sub)}`}
+                              className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent rounded-md transition-colors"
+                              onClick={() => setOpenCollection(null)}
+                            >
+                              {sub}
+                            </Link>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
 
-            <Link to="/products" className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">
-              {t("nav.shop")}
-            </Link>
-          </nav>
+              <Link to="/products" className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">
+                {t("nav.shop")}
+              </Link>
+            </nav>
+          )}
 
           {/* Actions */}
           <div className="flex items-center gap-0.5 md:gap-2 relative z-10">
@@ -183,28 +185,30 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Collections Horizontal Scroll - Enhanced for visibility */}
-        <div className="lg:hidden relative overflow-hidden border-t border-border/50 bg-background/50 backdrop-blur-sm">
-          <div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-3 px-4">
-            <Link to="/" className="text-[10px] font-black uppercase tracking-widest text-foreground hover:text-primary transition-colors shrink-0">
-              {t("nav.home")}
-            </Link>
-            {collections.map((col) => (
-              <Link
-                key={col}
-                to={`/products?metal=${metalSlugs[col]}`}
-                className="text-[10px] font-black uppercase tracking-widest text-foreground hover:text-primary transition-colors shrink-0 whitespace-nowrap"
-              >
-                {col}
+        {/* Mobile Collections Horizontal Scroll - Hidden on Home Page */}
+        {!isHomePage && (
+          <div className="lg:hidden relative overflow-hidden border-t border-border/50 bg-background/50 backdrop-blur-sm">
+            <div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-3 px-4">
+              <Link to="/" className="text-[10px] font-black uppercase tracking-widest text-foreground hover:text-primary transition-colors shrink-0">
+                {t("nav.home")}
               </Link>
-            ))}
-            <Link to="/products" className="text-[10px] font-black uppercase tracking-widest text-foreground hover:text-primary transition-colors shrink-0 whitespace-nowrap pr-4">
-              {t("nav.shop")}
-            </Link>
+              {collections.map((col) => (
+                <Link
+                  key={col}
+                  to={`/products?metal=${metalSlugs[col]}`}
+                  className="text-[10px] font-black uppercase tracking-widest text-foreground hover:text-primary transition-colors shrink-0 whitespace-nowrap"
+                >
+                  {col}
+                </Link>
+              ))}
+              <Link to="/products" className="text-[10px] font-black uppercase tracking-widest text-foreground hover:text-primary transition-colors shrink-0 whitespace-nowrap pr-4">
+                {t("nav.shop")}
+              </Link>
+            </div>
+            {/* Subtle gradient to indicate more content */}
+            <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
           </div>
-          {/* Subtle gradient to indicate more content */}
-          <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
-        </div>
+        )}
       </div>
 
       {/* Mobile menu drawer */}

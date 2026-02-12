@@ -30,8 +30,8 @@ export const EMICalculator: React.FC<EMICalculatorProps> = ({ price }) => {
     const tenures = [3, 6, 9, 12, 18, 24];
 
     return (
-        <div className="bg-primary/5 border border-primary/10 rounded-xl p-5 my-6">
-            <div className="flex items-center justify-between mb-4">
+        <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 md:p-5 my-4 md:my-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <h4 className="font-display font-bold text-sm flex items-center gap-2">
                     EMI Plans Available
                     <TooltipProvider>
@@ -45,22 +45,22 @@ export const EMICalculator: React.FC<EMICalculatorProps> = ({ price }) => {
                         </Tooltip>
                     </TooltipProvider>
                 </h4>
-                <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">
+                <span className="text-[10px] sm:text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded w-fit capitalize">
                     Starting from ₹{calculateEMI(price, 24, interestRate).toLocaleString()}/mo
                 </span>
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 mb-4">
                 {tenures.map((t) => (
                     <button
                         key={t}
                         onClick={() => setTenure(t)}
-                        className={`flex-1 min-w-[60px] py-2 px-3 rounded-lg text-xs font-semibold border transition-all ${tenure === t
+                        className={`py-2 px-1 sm:px-3 rounded-lg text-[10px] sm:text-xs font-black border transition-all ${tenure === t
                             ? "bg-primary text-primary-foreground border-primary shadow-sm"
                             : "bg-background border-border hover:border-primary/50 text-muted-foreground"
                             }`}
                     >
-                        {t} Months
+                        {t} <span className="hidden sm:inline">Months</span><span className="sm:hidden">M</span>
                     </button>
                 ))}
             </div>

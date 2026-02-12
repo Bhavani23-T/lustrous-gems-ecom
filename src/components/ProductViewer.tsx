@@ -71,7 +71,7 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                 <div
                     ref={containerRef}
                     className={cn(
-                        "relative aspect-square rounded-[2rem] overflow-hidden bg-[#FBFBFB] border border-border/50 shadow-inner group touch-pan-y",
+                        "relative aspect-[4/5] sm:aspect-square rounded-[2rem] overflow-hidden bg-[#FBFBFB] border border-border/50 shadow-inner group touch-pan-y max-w-[450px] mx-auto w-full",
                         !isRotating && "cursor-zoom-in"
                     )}
                     onMouseDown={(e) => handleStart(e.pageX)}
@@ -89,7 +89,7 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                         src={images[isRotating ? rotationIndex : selectedImage]}
                         alt={name}
                         className={cn(
-                            "w-full h-full object-contain transition-transform duration-500 ease-out will-change-transform p-4 md:p-8",
+                            "w-full h-full object-contain transition-transform duration-500 ease-out will-change-transform p-8 md:p-8",
                             isZoomed ? "scale-[2.5]" : "scale-100"
                         )}
                         style={isZoomed ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {}}
