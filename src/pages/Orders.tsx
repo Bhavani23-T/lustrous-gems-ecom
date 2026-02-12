@@ -10,10 +10,11 @@ const statusColors: Record<string, string> = {
   Shipped: "bg-indigo-100 text-indigo-700",
   "Out for Delivery": "bg-purple-100 text-purple-700",
   Delivered: "bg-green-100 text-green-700",
+  Cancelled: "bg-red-100 text-red-700",
 };
 
 const Orders = () => {
-  const { orders } = useStore();
+  const { orders, updateOrderStatus } = useStore();
 
   return (
     <div className="container mx-auto px-4 py-4 md:py-8">
@@ -49,6 +50,20 @@ const Orders = () => {
                   <span className={`text-[10px] uppercase font-bold px-3 py-1.5 rounded-full ${statusColors[order.status]}`}>
                     {order.status}
                   </span>
+
+                  {order.status === "Confirmed" && (
+                    <button
+                      onClick={() => {
+                        if (window.confirm("Are you sure you want to cancel this order?")) {
+                          updateOrderStatus(order.id, "Cancelled");
+                        }
+                      }}
+                      className="text-[10px] uppercase font-bold px-3 py-1.5 rounded-full border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      Cancel Order
+                    </button>
+                  )}
+
                   <TrackOrder order={order}>
                     <button className="bg-primary text-primary-foreground text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-2 hover:opacity-90 transition-opacity">
                       <Truck size={14} /> Track Order

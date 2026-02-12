@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, Heart, ShoppingBag, User, Menu, X, ChevronDown, Languages } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -29,8 +29,10 @@ const Navbar = () => {
   const { cartCount } = useStore();
   const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const subcatSlug = (sub: string) => sub.toLowerCase().replace(/ /g, "-");
+  const isHomePage = location.pathname === "/";
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
@@ -45,8 +47,8 @@ const Navbar = () => {
             <Logo variant="full" className="h-full shrink-0" />
           </Link>
 
-          {/* Desktop Collections Nav */}
-          <nav className="hidden lg:flex items-center gap-1 flex-1 ml-10 overflow-visible">
+          {/* Desktop Collections Nav - Hidden on Home Page */}
+          <nav className={`hidden lg:flex items-center gap-1 flex-1 ml-10 overflow-visible ${isHomePage ? "invisible pointer-events-none" : ""}`}>
             <Link to="/" className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">
               {t("nav.home")}
             </Link>
@@ -106,7 +108,7 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-0.5 md:gap-2 relative z-10">
-            <div className="relative">
+            <div className={`relative ${isHomePage ? "hidden lg:hidden" : "hidden lg:block"}`}>
               <button
                 onClick={() => setLangOpen(!langOpen)}
                 className="p-1.5 md:p-2 hover:text-primary transition-colors flex items-center gap-1"
@@ -182,8 +184,8 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Collections Horizontal Scroll - Enhanced for visibility */}
-        <div className="lg:hidden relative">
-          <div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-3 px-4 border-t border-border/50 bg-background/50 backdrop-blur-sm">
+        <div className="lg:hidden relative overflow-hidden border-t border-border/50 bg-background/50 backdrop-blur-sm">
+          <div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-3 px-4">
             <Link to="/" className="text-[10px] font-black uppercase tracking-widest text-foreground hover:text-primary transition-colors shrink-0">
               {t("nav.home")}
             </Link>

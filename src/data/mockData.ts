@@ -37,7 +37,7 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
-export type OrderStatus = "Confirmed" | "Packed" | "Shipped" | "Out for Delivery" | "Delivered";
+export type OrderStatus = "Confirmed" | "Packed" | "Shipped" | "Out for Delivery" | "Delivered" | "Cancelled";
 
 export interface Order {
   id: string;
@@ -141,6 +141,13 @@ export const mockOrders: Order[] = [
     items: [{ ...products[10], quantity: 1 }],
     total: 89999,
     status: "Shipped",
+  },
+  {
+    id: "ORD-003",
+    date: "2026-02-11",
+    items: [{ ...products[5], quantity: 2 }],
+    total: 49998,
+    status: "Confirmed",
   },
 ];
 

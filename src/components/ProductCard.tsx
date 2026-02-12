@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, ShoppingBag, Star, Eye } from "lucide-react";
+import { Heart, ShoppingBag, Star, Eye, ArrowUpRight } from "lucide-react";
 import { Product } from "@/data/mockData";
 import { useStore } from "@/context/StoreContext";
 import { motion } from "framer-motion";
@@ -37,20 +37,43 @@ const ProductCard = ({ product }: { product: Product }) => {
 
       {/* Image and Quick View Trigger */}
       <div className="relative aspect-square overflow-hidden bg-muted">
-        <Link to={`/product/${product.id}`} className="block h-full">
+        <Link to={`/product/${product.id}`} className="block h-full cursor-pointer">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
             loading="lazy"
           />
         </Link>
-        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+
+        {/* Desktop Overlay - Quick View and Arrow */}
+        <div className="absolute inset-x-0 bottom-0 p-3 hidden sm:flex justify-between items-center translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20 pointer-events-none">
           <QuickView product={product}>
-            <button className="bg-background text-foreground text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 pointer-events-auto">
+            <button className="pointer-events-auto bg-background/90 backdrop-blur-md text-foreground text-[10px] font-bold px-4 py-2 rounded-full shadow-xl flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-all">
               <Eye size={14} /> Quick View
             </button>
           </QuickView>
+          <Link
+            to={`/product/${product.id}`}
+            className="pointer-events-auto p-2.5 bg-primary text-primary-foreground rounded-full shadow-xl hover:rotate-45 transition-all"
+          >
+            <ArrowUpRight size={16} />
+          </Link>
+        </div>
+
+        {/* Mobile Edge Actions - Specifically for mobile view */}
+        <div className="absolute inset-x-0 bottom-0 p-2 sm:hidden flex justify-between items-center z-20 pointer-events-none">
+          <QuickView product={product}>
+            <button className="pointer-events-auto bg-background/95 backdrop-blur-sm text-primary text-[10px] font-black px-3 py-2 rounded-lg shadow-lg flex items-center gap-1.5 border border-primary/10">
+              <Eye size={12} /> QUICK VIEW
+            </button>
+          </QuickView>
+          <Link
+            to={`/product/${product.id}`}
+            className="pointer-events-auto p-2.5 bg-primary text-primary-foreground rounded-lg shadow-lg flex items-center justify-center"
+          >
+            <ArrowUpRight size={16} />
+          </Link>
         </div>
       </div>
 

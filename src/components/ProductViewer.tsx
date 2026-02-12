@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Move, ZoomIn, ZoomOut, RotateCw, Maximize2 } from "lucide-react";
+import { Move, RotateCw, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductViewerProps {
@@ -7,7 +7,7 @@ interface ProductViewerProps {
     name: string;
 }
 
-export function ProductViewer({ images, name }: ProductViewerProps) {
+export function ProductViewer({ images = [], name }: ProductViewerProps) {
     const [selectedImage, setSelectedImage] = useState(0);
     const [isRotating, setIsRotating] = useState(false);
     const [rotationIndex, setRotationIndex] = useState(0);
@@ -25,132 +25,104 @@ export function ProductViewer({ images, name }: ProductViewerProps) {
         return () => clearInterval(interval);
     }, [isRotating, images.length]);
 
-    const handleMouseDown = (e: React.MouseEvent) => {
+    const handleStart = (clientX: number) => {
         if (isZoomed) return;
-        dragRef.current = { isDragging: true, startX: e.pageX };
+        dragRef.current = { isDragging: true, startX: clientX };
         setIsRotating(false);
     };
 
-    const handleMouseMove = (e: React.MouseEvent) => {
+    const handleMove = (clientX: number, clientY: number) => {
         if (dragRef.current.isDragging) {
-            const deltaX = e.pageX - dragRef.current.startX;
+            const deltaX = clientX - dragRef.current.startX;
             if (Math.abs(deltaX) > 10) {
                 const step = Math.floor(deltaX / 10);
                 setRotationIndex((prev) => {
-                    let next = (prev + step) % images.length;
+                    let next = (prev - step) % images.length;
                     if (next < 0) next = images.length - 1;
                     return next;
                 });
-                dragRef.current.startX = e.pageX;
+                dragRef.current.startX = clientX;
             }
         }
 
         if (isZoomed && containerRef.current) {
             const { left, top, width, height } = containerRef.current.getBoundingClientRect();
-            const x = ((e.pageX - left) / width) * 100;
-            const y = ((e.pageY - top) / height) * 100;
+            const x = ((clientX - left) / width) * 100;
+            const y = ((clientY - top) / height) * 100;
             setZoomPos({ x, y });
         }
     };
 
-    const handleMouseEnter = () => {
-        if (!isRotating) setIsZoomed(true);
-    };
-
-    const handleMouseLeave = () => {
-        setIsZoomed(false);
+    const handleEnd = () => {
         dragRef.current.isDragging = false;
+        if (!window.matchMedia("(pointer: coarse)").matches) {
+            // Only reset zoom on desktop mouse leave
+            // On mobile we'll handle zoom differently if needed, 
+            // but for now let's just avoid auto-zoom on touch
+        }
     };
 
-    // POV Labels for thumbnails
     const povLabels = ["Front", "Side", "Back", "Top", "Bottom"];
 
     return (
-        <div className="flex gap-4">
-            {/* Side Thumbnails */}
-            <div className="flex flex-col gap-2 overflow-y-auto no-scrollbar py-1">
-                {images.map((img, i) => (
-                    <button
-                        key={i}
-                        onMouseEnter={() => {
-                            setSelectedImage(i);
-                            setRotationIndex(i);
-                            setIsRotating(false);
-                        }}
-                        className={cn(
-                            "group relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all shrink-0 bg-muted",
-                            (selectedImage === i && !isRotating) ? "border-primary scale-105" : "border-transparent opacity-60 hover:opacity-100"
-                        )}
-                    >
-                        <img src={img} alt={povLabels[i] || `View ${i + 1}`} className="w-full h-full object-cover" />
-                        <div className="absolute inset-x-0 bottom-0 bg-black/60 text-[7px] text-white py-0.5 text-center translate-y-full group-hover:translate-y-0 transition-transform">
-                            {povLabels[i] || `View ${i + 1}`}
-                        </div>
-                    </button>
-                ))}
-                <button
-                    onMouseEnter={() => {
-                        setIsRotating(true);
-                        setIsZoomed(false);
-                    }}
-                    className={cn(
-                        "relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all shrink-0 bg-primary/5 flex items-center justify-center",
-                        isRotating ? "border-primary bg-primary/10" : "border-transparent text-muted-foreground hover:bg-primary/5"
-                    )}
-                >
-                    <RotateCw size={20} className={cn("text-primary", isRotating && "animate-spin")} style={{ animationDuration: '3s' }} />
-                </button>
-            </div>
-
+        <div className="flex flex-col md:flex-row gap-6">
             {/* Main Viewer Container */}
-            <div className="flex-1 max-w-[480px]">
+            <div className="flex-1 order-1 md:order-2">
                 <div
                     ref={containerRef}
                     className={cn(
-                        "relative aspect-square rounded-xl overflow-hidden bg-[#FBFBFB] border border-border cursor-crosshair group shadow-sm",
-                        isZoomed && "cursor-zoom-in"
+                        "relative aspect-square rounded-[2rem] overflow-hidden bg-[#FBFBFB] border border-border/50 shadow-inner group touch-none",
+                        !isRotating && "cursor-zoom-in"
                     )}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseLeave}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
+                    onMouseDown={(e) => handleStart(e.pageX)}
+                    onMouseMove={(e) => handleMove(e.pageX, e.pageY)}
+                    onMouseUp={handleEnd}
+                    onMouseLeave={() => { handleEnd(); setIsZoomed(false); }}
+                    onMouseEnter={() => { if (!isRotating && !window.matchMedia("(pointer: coarse)").matches) setIsZoomed(true); }}
+
+                    onTouchStart={(e) => handleStart(e.touches[0].pageX)}
+                    onTouchMove={(e) => handleMove(e.touches[0].pageX, e.touches[0].pageY)}
+                    onTouchEnd={handleEnd}
                 >
                     {/* Main Image */}
                     <img
                         src={images[isRotating ? rotationIndex : selectedImage]}
                         alt={name}
                         className={cn(
-                            "w-full h-full object-contain transition-transform duration-300 will-change-transform",
-                            isZoomed ? "scale-[2.2]" : "scale-100"
+                            "w-full h-full object-contain transition-transform duration-500 ease-out will-change-transform p-4 md:p-8",
+                            isZoomed ? "scale-[2.5]" : "scale-100"
                         )}
                         style={isZoomed ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {}}
                     />
 
                     {/* Overlays */}
                     {isRotating && (
-                        <div className="absolute top-3 left-3 bg-primary/95 text-white px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
-                            <RotateCw size={10} className="animate-spin" />
-                            360° MODE
+                        <div className="absolute top-6 left-6 bg-primary/90 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 shadow-xl animate-in fade-in zoom-in duration-300">
+                            <RotateCw size={12} className="animate-spin" />
+                            360° View
                         </div>
                     )}
 
                     {!isZoomed && !isRotating && (
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
-                            <div className="bg-black/10 backdrop-blur-[1px] rounded-full p-3 text-white">
-                                <Move size={24} />
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 md:group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
+                            <div className="bg-black/10 backdrop-blur-[2px] rounded-full p-6 text-white/80">
+                                <Hand size={32} className="animate-bounce" />
                             </div>
                         </div>
                     )}
+
+                    {/* Interaction Hint for mobile */}
+                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 md:hidden">
+                        <div className="bg-white/80 backdrop-blur-md px-3 py-1 rounded-full border border-black/5 shadow-sm text-[8px] font-bold uppercase tracking-tighter text-muted-foreground flex items-center gap-2">
+                            <Move size={10} /> {isRotating ? "Slide to rotate" : "Swipe to see more"}
+                        </div>
+                    </div>
                 </div>
 
-                <div className="mt-4 flex justify-between items-center px-1">
+                <div className="mt-6 flex justify-between items-center px-2">
                     <div className="flex flex-col">
-                        <p className="text-[10px] text-foreground font-semibold uppercase tracking-wider">
-                            {isRotating ? "360° Viewing" : povLabels[selectedImage] || "Product View"}
-                        </p>
-                        <p className="text-[9px] text-muted-foreground uppercase tracking-wider">
-                            Drag to Rotate • Hover to Zoom
+                        <p className="text-[10px] text-foreground font-black uppercase tracking-widest opacity-80">
+                            {isRotating ? "Interactive 360° Experience" : povLabels[selectedImage] || "Main View"}
                         </p>
                     </div>
                     <div className="flex gap-1.5">
@@ -158,14 +130,51 @@ export function ProductViewer({ images, name }: ProductViewerProps) {
                             <div
                                 key={i}
                                 className={cn(
-                                    "h-1 rounded-full transition-all",
-                                    (selectedImage === i && !isRotating) || (isRotating && rotationIndex === i) ? "w-4 bg-primary" : "w-1.5 bg-muted-foreground/20"
+                                    "h-1 rounded-full transition-all duration-500",
+                                    (selectedImage === i && !isRotating) || (isRotating && rotationIndex === i) ? "w-8 bg-primary" : "w-2 bg-muted-foreground/20"
                                 )}
                             />
                         ))}
                     </div>
                 </div>
             </div>
+
+            {/* Thumbnails */}
+            <div className="flex flex-row md:flex-col gap-3 overflow-x-auto md:overflow-y-auto no-scrollbar py-2 order-2 md:order-1 px-1 -mx-4 md:mx-0 px-4 md:px-0">
+                {images.map((img, i) => (
+                    <button
+                        key={i}
+                        onClick={() => {
+                            setSelectedImage(i);
+                            setRotationIndex(i);
+                            setIsRotating(false);
+                            setIsZoomed(false);
+                        }}
+                        className={cn(
+                            "group relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 shrink-0 bg-white shadow-sm flex items-center justify-center p-1",
+                            (selectedImage === i && !isRotating) ? "border-primary ring-4 ring-primary/10 scale-95" : "border-transparent opacity-60 hover:opacity-100 hover:border-border"
+                        )}
+                    >
+                        <img src={img} alt={povLabels[i] || `View ${i + 1}`} className="w-full h-full object-contain" />
+                    </button>
+                ))}
+                <button
+                    onClick={() => {
+                        setIsRotating(!isRotating);
+                        setIsZoomed(false);
+                    }}
+                    className={cn(
+                        "relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 shrink-0 flex items-center justify-center shadow-sm",
+                        isRotating ? "border-primary bg-primary/10 text-primary scale-95 ring-4 ring-primary/10" : "border-transparent bg-white text-muted-foreground hover:bg-muted"
+                    )}
+                >
+                    <div className="flex flex-col items-center gap-1.5">
+                        <RotateCw size={24} className={cn(isRotating && "animate-spin")} style={{ animationDuration: '3s' }} />
+                        <span className="text-[9px] font-black uppercase tracking-tighter">360° Mode</span>
+                    </div>
+                </button>
+            </div>
         </div>
+
     );
 }

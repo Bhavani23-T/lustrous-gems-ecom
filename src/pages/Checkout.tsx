@@ -4,6 +4,8 @@ import { useStore } from "@/context/StoreContext";
 import { ShoppingBag, CheckCircle } from "lucide-react";
 import { GiftingOptions } from "@/components/GiftingOptions";
 
+import { BackButton } from "@/components/ui/BackButton";
+
 const Checkout = () => {
   const { cart, cartTotal, clearCart, placeOrder } = useStore();
   const navigate = useNavigate();
@@ -56,6 +58,7 @@ const Checkout = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <BackButton label="Back to Cart" />
       <h1 className="font-display text-2xl md:text-3xl font-bold mb-8">Checkout</h1>
       <div className="grid lg:grid-cols-3 gap-8">
         <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
@@ -89,9 +92,21 @@ const Checkout = () => {
               ))}
             </div>
           </div>
-          <button type="submit" className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium text-sm hover:opacity-90 transition-opacity">
-            Place Order · ₹{cartTotal.toLocaleString()}
-          </button>
+          <div className="flex flex-col-reverse sm:flex-row gap-3">
+            <button
+              type="button"
+              onClick={() => navigate("/cart")}
+              className="flex-1 border border-border py-4 sm:py-3 rounded-xl sm:rounded-lg font-bold sm:font-medium text-sm hover:bg-muted transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-[2] bg-primary text-primary-foreground py-4 sm:py-3 rounded-xl sm:rounded-lg font-bold sm:font-medium text-sm hover:opacity-90 transition-opacity active:scale-[0.98] transition-all shadow-lg shadow-primary/20"
+            >
+              Place Order · ₹{cartTotal.toLocaleString()}
+            </button>
+          </div>
         </form>
 
         <div className="bg-card border border-border rounded-lg p-6 h-fit">

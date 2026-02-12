@@ -3,7 +3,7 @@ import { Heart, Instagram, Facebook, Twitter, Mail, Phone, MapPin } from "lucide
 import { Logo } from "../Logo";
 
 const Footer = () => (
-  <footer className="bg-secondary/30 border-t border-border mt-10 md:mt-20 relative overflow-hidden">
+  <footer className="bg-secondary/30 border-t border-border mt-6 md:mt-20 relative overflow-hidden">
     {/* Decorative background element */}
     <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 

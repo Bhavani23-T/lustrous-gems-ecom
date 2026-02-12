@@ -75,7 +75,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ productName, children 
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
+            <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 border-b border-border/50">
                     <DialogHeader>
                         <DialogTitle className="font-display text-2xl font-bold">Write a Review</DialogTitle>

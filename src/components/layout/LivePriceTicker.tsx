@@ -27,9 +27,9 @@ export function LivePriceTicker() {
     }, []);
 
     return (
-        <div className="bg-primary text-primary-foreground py-1 px-4 overflow-hidden select-none">
-            <div className="container mx-auto flex items-center justify-center gap-6 text-[10px] md:text-xs font-semibold tracking-wider uppercase">
-                <div className="flex items-center gap-1.5 whitespace-nowrap">
+        <div className="bg-primary text-primary-foreground py-1 px-4 overflow-hidden select-none w-full relative">
+            <div className="container mx-auto flex items-center justify-center gap-4 sm:gap-6 text-[10px] md:text-xs font-semibold tracking-wider uppercase max-w-full overflow-hidden">
+                <div className="flex items-center gap-1.5 whitespace-nowrap overflow-hidden">
                     <span className="opacity-70">Gold 24K:</span>
                     <span>₹{prices.gold.toLocaleString()}</span>
                     <span className={`flex items-center gap-0.5 ${trends.gold > 0 ? "text-green-300" : "text-red-300"}`}>
