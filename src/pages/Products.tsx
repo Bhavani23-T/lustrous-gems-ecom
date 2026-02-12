@@ -29,11 +29,9 @@ const Products = () => {
   const [isLoading, setIsLoading] = useState(true);
   const searchQuery = params.get("search") || "";
 
-  // Artificial loading effect on filter change
+  // Data is local, no need for artificial loading
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 100);
-    return () => clearTimeout(timer);
+    setIsLoading(false);
   }, [selectedMetal, selectedCategory, selectedPurity, priceRange, sortBy, searchQuery]);
 
   const metalParam = params.get("metal");

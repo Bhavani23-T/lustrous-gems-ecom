@@ -11,10 +11,9 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      viewport={{ once: true }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.15 }}
       className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300"
     >
       {/* Badges */}
@@ -42,9 +41,10 @@ const ProductCard = ({ product }: { product: Product }) => {
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             loading="eager"
             decoding="async"
+            style={{ fetchPriority: 'high' } as any}
           />
         </Link>
 

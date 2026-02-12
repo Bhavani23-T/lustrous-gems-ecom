@@ -10,15 +10,17 @@ export const FestivalShowcase = () => {
                 {festivalCollections.map((col, i) => (
                     <motion.div
                         key={col.id}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8, delay: i * 0.2 }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
                         viewport={{ once: true }}
                         className="flex-1 relative h-[500px] md:h-[600px] rounded-[40px] overflow-hidden group shadow-2xl shadow-primary/10"
                     >
                         <img
                             src={col.image}
                             alt={col.name}
+                            loading="eager"
+                            decoding="async"
                             className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />

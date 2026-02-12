@@ -27,9 +27,9 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />
         <div className="absolute inset-0 z-10 container mx-auto px-4 h-full flex items-center">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
             className="max-w-xl"
           >
             <p className="text-primary font-display text-xs md:text-sm tracking-[0.4em] uppercase mb-3 font-black">Luxury Fine Jewellery</p>
@@ -76,10 +76,10 @@ const Index = () => {
           {categories.map((cat, i) => (
             <motion.div
               key={cat.slug}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ duration: 0.2 }}
             >
               <Link
                 to={`/products?category=${cat.slug}`}

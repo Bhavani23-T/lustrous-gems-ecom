@@ -94,7 +94,10 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                             "w-full h-full object-contain transition-transform duration-300 ease-out will-change-transform p-4 md:p-8",
                             isZoomed ? "scale-[2.5]" : "scale-100"
                         )}
-                        style={isZoomed ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {}}
+                        style={{
+                            fetchPriority: 'high',
+                            ...(isZoomed ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {})
+                        } as any}
                     />
 
                     {/* Overlays */}

@@ -24,14 +24,23 @@ const Checkout = () => {
   }
 
   if (placed) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     return (
-      <div className="container mx-auto px-4 py-20 text-center">
-        <CheckCircle size={64} className="mx-auto text-primary mb-4" />
-        <h1 className="font-display text-2xl font-bold mb-2">Order Placed Successfully!</h1>
-        <p className="text-muted-foreground mb-6">Thank you for shopping with Lumière</p>
-        <div className="flex gap-3 justify-center">
-          <Link to="/orders" className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium text-sm">View Orders</Link>
-          <Link to="/products" className="border border-border px-6 py-3 rounded-lg font-medium text-sm">Continue Shopping</Link>
+      <div className="container mx-auto px-4 py-20 text-center min-h-[60vh] flex flex-col items-center justify-center">
+        <div className="bg-primary/10 p-6 rounded-full mb-8">
+          <CheckCircle size={80} className="text-primary animate-in zoom-in duration-500" />
+        </div>
+        <h1 className="font-display text-4xl font-black mb-4">Order Confirmed!</h1>
+        <p className="text-muted-foreground mb-12 max-w-md mx-auto font-medium text-lg">
+          Your exquisite pieces are being prepared for delivery. Thank you for choosing Lumière for your luxury jewelry.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-sm">
+          <Link to="/orders" className="flex-1 bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95">
+            Track Order
+          </Link>
+          <Link to="/products" className="flex-1 bg-secondary text-secondary-foreground border border-border px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-muted transition-all active:scale-95">
+            Continue Shop
+          </Link>
         </div>
       </div>
     );
