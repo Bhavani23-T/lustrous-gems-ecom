@@ -88,8 +88,10 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                     <img
                         src={images[isRotating ? rotationIndex : selectedImage]}
                         alt={name}
+                        loading="eager"
+                        decoding="sync"
                         className={cn(
-                            "w-full h-full object-contain transition-transform duration-500 ease-out will-change-transform p-4 md:p-8",
+                            "w-full h-full object-contain transition-transform duration-300 ease-out will-change-transform p-4 md:p-8",
                             isZoomed ? "scale-[2.5]" : "scale-100"
                         )}
                         style={isZoomed ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {}}

@@ -32,7 +32,7 @@ const Products = () => {
   // Artificial loading effect on filter change
   useEffect(() => {
     setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 600);
+    const timer = setTimeout(() => setIsLoading(false), 100);
     return () => clearTimeout(timer);
   }, [selectedMetal, selectedCategory, selectedPurity, priceRange, sortBy, searchQuery]);
 

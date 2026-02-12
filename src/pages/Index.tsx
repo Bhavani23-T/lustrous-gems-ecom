@@ -23,7 +23,7 @@ const Index = () => {
     <>
       {/* Hero */}
       <section className="relative h-[70vh] md:h-[80vh] overflow-hidden">
-        <img src={hero3} alt="Diamond Elegance" className="w-full h-full object-cover object-center" />
+        <img src={hero3} alt="Diamond Elegance" className="w-full h-full object-cover object-center" loading="eager" decoding="async" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />
         <div className="absolute inset-0 z-10 container mx-auto px-4 h-full flex items-center">
           <motion.div
@@ -85,7 +85,7 @@ const Index = () => {
                 to={`/products?category=${cat.slug}`}
                 className="group block relative aspect-square rounded-xl overflow-hidden"
               >
-                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
+                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="eager" decoding="async" />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
                 <h3 className="absolute bottom-4 left-4 font-display text-lg font-semibold text-primary-foreground">{cat.name}</h3>
               </Link>

@@ -13,6 +13,7 @@ const ProductCard = ({ product }: { product: Product }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
       viewport={{ once: true }}
       className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300"
     >
@@ -42,7 +43,8 @@ const ProductCard = ({ product }: { product: Product }) => {
             src={product.image}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-            loading="lazy"
+            loading="eager"
+            decoding="async"
           />
         </Link>
 
