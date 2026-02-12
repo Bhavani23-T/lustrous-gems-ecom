@@ -71,7 +71,7 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                 <div
                     ref={containerRef}
                     className={cn(
-                        "relative aspect-[4/5] sm:aspect-square rounded-[2rem] overflow-hidden bg-[#FBFBFB] border border-border/50 shadow-inner group touch-pan-y max-w-[450px] mx-auto w-full",
+                        "relative aspect-[4/3] sm:aspect-square rounded-[1.5rem] overflow-hidden bg-[#FBFBFB] border border-border/50 shadow-inner group touch-pan-y w-full max-h-[300px] sm:max-h-none",
                         !isRotating && "cursor-zoom-in"
                     )}
                     onMouseDown={(e) => handleStart(e.pageX)}
@@ -89,7 +89,7 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                         src={images[isRotating ? rotationIndex : selectedImage]}
                         alt={name}
                         className={cn(
-                            "w-full h-full object-contain transition-transform duration-500 ease-out will-change-transform p-8 md:p-8",
+                            "w-full h-full object-contain transition-transform duration-500 ease-out will-change-transform p-4 md:p-8",
                             isZoomed ? "scale-[2.5]" : "scale-100"
                         )}
                         style={isZoomed ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {}}
@@ -119,28 +119,21 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                     </div>
                 </div>
 
-                <div className="mt-6 flex justify-between items-center px-2">
-                    <div className="flex flex-col">
-                        <p className="text-[10px] text-foreground font-black uppercase tracking-widest opacity-80">
-                            {isRotating ? "Interactive 360° Experience" : povLabels[selectedImage] || "Main View"}
-                        </p>
-                    </div>
-                    <div className="flex gap-1.5">
-                        {images.map((_, i) => (
-                            <div
-                                key={i}
-                                className={cn(
-                                    "h-1 rounded-full transition-all duration-500",
-                                    (selectedImage === i && !isRotating) || (isRotating && rotationIndex === i) ? "w-8 bg-primary" : "w-2 bg-muted-foreground/20"
-                                )}
-                            />
-                        ))}
-                    </div>
+                <div className="flex gap-1.5 h-6 items-center">
+                    {images.map((_, i) => (
+                        <div
+                            key={i}
+                            className={cn(
+                                "h-0.5 rounded-full transition-all duration-500",
+                                (selectedImage === i && !isRotating) || (isRotating && rotationIndex === i) ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/20"
+                            )}
+                        />
+                    ))}
                 </div>
             </div>
 
-            {/* Thumbnails */}
-            <div className="flex flex-row md:flex-col gap-3 overflow-x-auto md:overflow-y-auto no-scrollbar py-2 order-2 md:order-1 px-1 -mx-4 md:mx-0 px-4 md:px-0">
+            {/* Thumbnails - Smaller for mobile */}
+            <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto no-scrollbar py-1 order-2 md:order-1 px-1 -mx-4 md:mx-0 px-4 md:px-0">
                 {images.map((img, i) => (
                     <button
                         key={i}
@@ -151,8 +144,8 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                             setIsZoomed(false);
                         }}
                         className={cn(
-                            "group relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 shrink-0 bg-white shadow-sm flex items-center justify-center p-1",
-                            (selectedImage === i && !isRotating) ? "border-primary ring-4 ring-primary/10 scale-95" : "border-transparent opacity-60 hover:opacity-100 hover:border-border"
+                            "group relative w-12 h-12 md:w-24 md:h-24 rounded-xl overflow-hidden border transition-all duration-300 shrink-0 bg-white shadow-sm flex items-center justify-center p-0.5",
+                            (selectedImage === i && !isRotating) ? "border-primary ring-2 ring-primary/10 scale-95" : "border-transparent opacity-60 hover:opacity-100 hover:border-border"
                         )}
                     >
                         <img src={img} alt={povLabels[i] || `View ${i + 1}`} className="w-full h-full object-contain" />
@@ -164,13 +157,13 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                         setIsZoomed(false);
                     }}
                     className={cn(
-                        "relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 shrink-0 flex items-center justify-center shadow-sm",
-                        isRotating ? "border-primary bg-primary/10 text-primary scale-95 ring-4 ring-primary/10" : "border-transparent bg-white text-muted-foreground hover:bg-muted"
+                        "relative w-12 h-12 md:w-24 md:h-24 rounded-xl overflow-hidden border transition-all duration-300 shrink-0 flex items-center justify-center shadow-sm",
+                        isRotating ? "border-primary bg-primary/10 text-primary scale-95 ring-2 ring-primary/10" : "border-transparent bg-white text-muted-foreground hover:bg-muted"
                     )}
                 >
-                    <div className="flex flex-col items-center gap-1.5">
-                        <RotateCw size={24} className={cn(isRotating && "animate-spin")} style={{ animationDuration: '3s' }} />
-                        <span className="text-[9px] font-black uppercase tracking-tighter">360° Mode</span>
+                    <div className="flex flex-col items-center gap-0.5">
+                        <RotateCw size={14} className={cn(isRotating && "animate-spin")} style={{ animationDuration: '3s' }} />
+                        <span className="text-[7px] font-black uppercase tracking-tighter">360°</span>
                     </div>
                 </button>
             </div>

@@ -51,7 +51,15 @@ const Products = () => {
     let result = [...products];
     if (searchQuery) result = result.filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
     if (selectedMetal) result = result.filter((p) => p.metal.toLowerCase().replace(/ /g, "-") === selectedMetal);
-    if (selectedCategory) result = result.filter((p) => p.category === selectedCategory);
+    if (selectedCategory) {
+      result = result.filter((p) => {
+        const pCat = p.category.toLowerCase();
+        const sCat = selectedCategory.toLowerCase();
+        // Allow "necksets" and "necklaces" to be interchangeable for broader discovery
+        if ((sCat === "necksets" || sCat === "necklaces") && (pCat === "necksets" || pCat === "necklaces")) return true;
+        return pCat === sCat;
+      });
+    }
     if (selectedPurity) result = result.filter((p) => p.purity === selectedPurity);
     result = result.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
 
@@ -140,7 +148,7 @@ const Products = () => {
               <input
                 type="radio"
                 name="category"
-                checked={selectedCategory === c.toLowerCase().replace(/ /g, "-")}
+                checked={selectedCategory === c.toLowerCase().replace(/ /g, "-") || (selectedCategory === "necksets" && c.toLowerCase() === "necklaces") || (selectedCategory === "necklaces" && c.toLowerCase() === "necksets")}
                 onChange={() => setSelectedCategory(c.toLowerCase().replace(/ /g, "-"))}
                 className="accent-primary w-4 h-4"
               />

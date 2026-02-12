@@ -40,11 +40,16 @@ const ProductDetail = () => {
     );
   }
 
-  const related = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const related = products.filter((p) => {
+    const isSameCategory = p.category === product.category;
+    const isInterchangeable = (product.category.toLowerCase() === "necksets" || product.category.toLowerCase() === "necklaces") &&
+      (p.category.toLowerCase() === "necksets" || p.category.toLowerCase() === "necklaces");
+    return (isSameCategory || isInterchangeable) && p.id !== product.id;
+  }).slice(0, 4);
   const wishlisted = isInWishlist(product.id);
 
   return (
-    <div className="container mx-auto px-4 py-4 md:py-8 pb-32 md:pb-8">
+    <div className="container mx-auto px-4 py-4 md:py-8 pb-48 md:pb-8">
       {/* Breadcrumbs & Navigation */}
       <div className="flex items-center justify-between mb-4 md:mb-8">
         <BackButton label="Back" />
@@ -74,9 +79,9 @@ const ProductDetail = () => {
               <span className="text-xs text-muted-foreground uppercase tracking-widest">{product.purity}</span>
             </div>
 
-            <h1 className="font-display text-3xl md:text-4xl font-bold mb-3 leading-tight">{product.name}</h1>
+            <h1 className="font-display text-2xl md:text-4xl font-bold mb-1 leading-tight">{product.name}</h1>
 
-            <div className="flex items-center gap-4 mb-4 md:mb-6">
+            <div className="flex items-center gap-4 mb-2 md:mb-6">
               <div className="flex items-center gap-1 bg-primary/5 px-2 py-1 rounded-lg">
                 <Star size={14} className="fill-primary text-primary" />
                 <span className="text-sm font-bold text-primary">{product.rating}</span>
@@ -84,8 +89,8 @@ const ProductDetail = () => {
               <span className="text-sm text-muted-foreground border-l border-border pl-4">{product.reviewCount} Reviews</span>
             </div>
 
-            <div className="flex items-baseline gap-4 mb-4 md:mb-6">
-              <span className="text-3xl font-black text-foreground">₹{product.price.toLocaleString()}</span>
+            <div className="flex items-baseline gap-4 mb-2 md:mb-6">
+              <span className="text-2xl md:text-3xl font-black text-foreground">₹{product.price.toLocaleString()}</span>
               {product.originalPrice && (
                 <span className="text-xl text-muted-foreground/60 line-through">₹{product.originalPrice.toLocaleString()}</span>
               )}
@@ -96,7 +101,7 @@ const ProductDetail = () => {
               )}
             </div>
 
-            <p className="text-base text-muted-foreground mb-6 md:mb-8 leading-relaxed">
+            <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-8 leading-relaxed line-clamp-2 md:line-clamp-none">
               {product.description}
             </p>
 
@@ -190,7 +195,7 @@ const ProductDetail = () => {
 
 
       {/* Enhanced Reviews Section */}
-      <section className="mt-8 md:mt-32 border-t border-border/50 pt-8 md:pt-24">
+      <section className="mt-12 md:mt-32 border-t border-border/50 pt-12 md:pt-24">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
           <div>
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">Customer Stories</h2>
