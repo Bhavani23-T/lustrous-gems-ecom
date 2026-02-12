@@ -44,7 +44,7 @@ const ProductDetail = () => {
   const wishlisted = isInWishlist(product.id);
 
   return (
-    <div className="container mx-auto px-4 py-4 md:py-8 pb-20 md:pb-8">
+    <div className="container mx-auto px-4 py-4 md:py-8 pb-48 md:pb-8">
       {/* Breadcrumbs & Navigation */}
       <div className="flex items-center justify-between mb-4 md:mb-8">
         <BackButton label="Back" />

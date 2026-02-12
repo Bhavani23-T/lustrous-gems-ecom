@@ -71,7 +71,7 @@ export function ProductViewer({ images = [], name }: ProductViewerProps) {
                 <div
                     ref={containerRef}
                     className={cn(
-                        "relative aspect-square rounded-[2rem] overflow-hidden bg-[#FBFBFB] border border-border/50 shadow-inner group touch-none",
+                        "relative aspect-square rounded-[2rem] overflow-hidden bg-[#FBFBFB] border border-border/50 shadow-inner group touch-pan-y",
                         !isRotating && "cursor-zoom-in"
                     )}
                     onMouseDown={(e) => handleStart(e.pageX)}

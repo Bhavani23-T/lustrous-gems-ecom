@@ -48,9 +48,9 @@ export const QuickView: React.FC<QuickViewProps> = ({ product, children }) => {
                         <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold mb-2">
                             {product.metal} · {product.purity}
                         </p>
-                        <h2 className="font-display text-xl sm:text-2xl font-bold mb-4">{product.name}</h2>
+                        <h2 className="font-display text-xl sm:text-2xl font-bold mb-2 sm:mb-4">{product.name}</h2>
 
-                        <div className="flex items-center gap-4 mb-4 sm:mb-6">
+                        <div className="flex items-center gap-4 mb-3 sm:mb-6">
                             <div className="flex items-center gap-1">
                                 <Star size={16} className="fill-primary text-primary" />
                                 <span className="text-sm font-bold">{product.rating}</span>
@@ -58,14 +58,14 @@ export const QuickView: React.FC<QuickViewProps> = ({ product, children }) => {
                             <span className="text-sm text-muted-foreground">{product.reviewCount} Reviews</span>
                         </div>
 
-                        <div className="flex items-baseline gap-3 mb-4 sm:mb-6">
+                        <div className="flex items-baseline gap-3 mb-3 sm:mb-6">
                             <span className="text-xl sm:text-2xl font-bold">₹{product.price.toLocaleString()}</span>
                             {product.originalPrice && (
                                 <span className="text-base sm:text-lg text-muted-foreground line-through">₹{product.originalPrice.toLocaleString()}</span>
                             )}
                         </div>
 
-                        <p className="text-sm text-muted-foreground mb-6 sm:mb-8 line-clamp-3">
+                        <p className="text-sm text-muted-foreground mb-4 sm:mb-8 line-clamp-2 sm:line-clamp-3">
                             {product.description}
                         </p>
 
@@ -90,10 +90,9 @@ export const QuickView: React.FC<QuickViewProps> = ({ product, children }) => {
                         </div>
 
                         <button
-                            className="text-sm text-primary font-semibold mt-6 hover:underline inline-flex items-center gap-1 w-fit"
+                            className="text-[12px] sm:text-sm text-primary font-bold mt-4 sm:mt-6 hover:underline inline-flex items-center gap-1 w-fit uppercase tracking-wider"
                             onClick={() => {
                                 navigate(`/product/${product.id}`);
-                                // Close dialog manually if needed, but navigate will usually unmount it
                             }}
                         >
                             View Full Details
